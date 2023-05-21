@@ -125,52 +125,24 @@
 					$html .= '<p>'.$dt['mensaje'].'</p>';
 				$html .= '</div>';
 				//----------------------------------------
-				require_once($ru0.DIRMOR.$cls['cl0'].'.php');
-				$_cor = new $cls['cl0']();
-				//----------------------------------------
-				$json->asunto = $asunto;
-				$json->cuerpo = $html;
-				$json->fecha = $dt['created_at'];
-				//----------------------------------------
-				$r_cor = $_cor->sendMail($ru0, $json);
-				//----------------------------------------
-				echo $_SESSION['mensjEmail'] = $r_cor;
-				//----------------------------------------
-				//mail($para, $asunto, $html, $headers);
-				//----------------------------------------
-				/*
-					require($ru0.'plugins/sendgrid/vendor/autoload.php');
-					$apy_key=SECRET_KEY;
+				if (SCHU == '_qas') {
 					//----------------------------------------
-					$email = new \SendGrid\Mail\Mail(); 
+					$r_cor = mail($para, $asunto, $html, $headers);
 					//----------------------------------------
-					//aquí va el correo y nombre del remitente // remitente creado en: app.sendgrid.com
-					$email->setFrom("anonimotest40@gmail.com", "Anonimo Test");
-					$email->addTo("admin@frankmorenoalburqueque.com", "Admin");
-					$email->addTo("gattithofmd01@gmail.com", "gattithofmd01");
-					//Asunto del correo
-					$email->setSubject($asunto);
-					//aquí va el correo y nombre del destinatario
-					$email->addTo('informes@frankmorenoalburqueque.com', "Informes - Frank Moreno");
-					//conteniado del correo / Solo texto HTML
-					$email->addContent(
-						"text/html", 
-						$html
-					);
+					echo $_SESSION['mensjEmail'] = $r_cor;
+				}else{
 					//----------------------------------------
-					$sendgrid = new \SendGrid($apy_key);
-					try {
-						$response = $sendgrid->send($email);
-						//print $response->statusCode() . "\n";
-						//print_r($response->headers());
-						//print $response->body() . "\n";
-						header('Content-Type: application/json');
-						header('Access-Control-Allow-Origin: *');
-						echo json_encode($response->statusCode());
-					} catch (Exception $e) {
-						echo 'Caught exception: '. $e->getMessage() ."\n";
-					}
-				*/
+					require_once($ru0.DIRMOR.$cls['cl0'].'.php');
+					$_cor = new $cls['cl0']();
+					//----------------------------------------
+					$json->asunto = $asunto;
+					$json->cuerpo = $html;
+					$json->fecha = $dt['created_at'];
+					//----------------------------------------
+					$r_cor = $_cor->sendMail($ru0, $json);
+					//----------------------------------------
+					echo $_SESSION['mensjEmail'] = $r_cor;
+				}
 			}
 			$_SESSION['stat'] = $resp->inf;
 			$_SESSION['sql'] = $resp->sql;

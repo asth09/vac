@@ -20,7 +20,7 @@
 					$inf.='<th>Descripción</th>';
 					$inf.='<th>Creado</th>';
 					$inf.='<th>Gestión</th>';
-				$inf.='</tr>'
+				$inf.='</tr>';
 			$inf.='</thead>';
 			$inf.='<tbody>';
 				$sql = "SELECT * FROM ".$this->table." WHERE status <> 2 ORDER BY ".$this->tid." DESC;";
