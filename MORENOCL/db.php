@@ -61,6 +61,29 @@
 					$sql = substr($sql, 0, -2);
 					$sql .= " );";
 				break;
+				case 4://GENERRAR SENTENCIA PARA BUSCAR FILA EN DATA BASE
+					$sql = "SELECT * FROM ".$table." WHERE ";
+					//-----------campos-valores----------------
+						foreach ($dt as $key => $value) {
+							switch ($key) {
+								case 'created_at':
+								case 'id_created':
+								case 'updated_at':
+								case 'id_updated':
+								case 'drop_at':
+								case 'id_drop':
+								case 'motivo_drop':
+								case 'status':
+								break;
+								default:
+									$sql .= $key."='".$value."' AND ";
+								break;
+							}
+						}
+					//-----------fin-campos-valores------------
+					$sql = substr($sql, 0, -5);
+					$sql .= ";";
+				break;
 				default://GENERAR SENTENCIA UPDATE
 					$sql = "UPDATE ".$this_table." SET ";
 					//-----------campos-valores----------------
