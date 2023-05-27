@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://frankmorenoalburqueque.com/images/ico490x458.png" height="320px" title="Icono">
+	<img src="https://frankmorenoalburqueque.com/images/ico490x458.png" height="320px" title="Icono">
 </p>
 
 [![Canal de GitHub](https://img.shields.io/badge/Canal-GitHub-black)](https://github.com/fmorenoadmin)
@@ -26,6 +26,8 @@
 
 <p>
 	En La Clase db. Se agregó una función que permite generar la sentencia SQL para los INSERT y UPDATE:
+	Se agregó una 4 validación, esta sirve para generar un SELECT * FROM el cual de acuerdo a los datos
+	dados buscará en la Base de datos registros existentes con los campos dados.
 <pre>
 function get_sql(
 	$table, //nombre de tabla
@@ -60,6 +62,30 @@ function get_sql(
 			//-----------fin-valores------------
 			$sql = substr($sql, 0, -2);
 			$sql .= " );";
+		break;
+		case 4://GENERRAR SENTENCIA PARA BUSCAR FILA EN DATA BASE
+			$sql = "SELECT * FROM ".$table." WHERE ";
+			//-----------campos-valores----------------
+				foreach ($dt as $key => $value) {
+					switch ($key) {
+						case 'created_at':
+						case 'id_created':
+						case 'updated_at':
+						case 'id_updated':
+						case 'drop_at':
+						case 'id_drop':
+						case 'motivo_drop':
+						case 'status':
+							//esots campos son omitidos a la hora de realizar la busqueda
+						break;
+						default:
+							$sql .= $key."='".$value."' AND ";
+						break;
+					}
+				}
+			//-----------fin-campos-valores------------
+			$sql = substr($sql, 0, -5);
+			$sql .= ";";
 		break;
 		default://GENERAR SENTENCIA UPDATE
 			$sql = "UPDATE ".$table." SET ";
@@ -350,5 +376,5 @@ function get_sql(
 	<label><a href="mailto:admin@frankmorenoalburqueque.com">admin@frankmorenoalburqueque.com</a></label><br>
 	<label><a href="https://frankmorenoalburqueque.com" target="_blank">https://frankmorenoalburqueque.com</a></label><br>
 	<label><a href="tel:924741703">+51 924 741 703</a></label><br>
-  <img src="https://frankmorenoalburqueque.com/images/logo480x240.png" width="auto" title="Logo">
+	<img src="https://frankmorenoalburqueque.com/images/logo480x240.png" width="auto" title="Logo">
 </p>
