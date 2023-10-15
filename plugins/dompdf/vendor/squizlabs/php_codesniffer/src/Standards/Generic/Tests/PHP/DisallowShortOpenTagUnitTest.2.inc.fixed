@@ -1,0 +1,8 @@
+<div>
+<?= $var; ?>
+Some content <?= $var ?> Some more content
+<?php
+echo $var;
+?>
+<?= $var; ?>
+</div>
