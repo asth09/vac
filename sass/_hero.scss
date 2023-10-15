@@ -5,7 +5,7 @@
   padding-top: 120px;
   margin-bottom: 90px;
   @media #{$small_mobile} {
-    padding-top: 30px;
+	padding-top: 30px;
   }
  }
  .slide-item {
@@ -28,7 +28,7 @@
   padding: 65px 0;
   @include transition(0.4s);
   @media #{$small_mobile} {
-    padding: 0;
+	padding: 0;
   }
 }
 

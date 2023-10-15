@@ -5,16 +5,16 @@
   text-align: center;
   padding-bottom: 5px;
   p {
-    font-size: 16px;
+	font-size: 16px;
   }
   i {
-    color: #d32a2a;
+	color: #d32a2a;
   }
   a {
-    color: $p_color;
-    text-decoration: underline;
-    &:hover {
-      color:  $primary_color;
-    }
+	color: $p_color;
+	text-decoration: underline;
+	&:hover {
+	  color:  $primary_color;
+	}
   }
 }
