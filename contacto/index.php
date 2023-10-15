@@ -47,20 +47,21 @@
 				<input type="text" name="correo" placeholder="Correo electrónico" required="required" />
 				<input type="text" name="telefono" placeholder="Teléfono" required="required" />
 				<textarea placeholder="Message" class="ckeditor" id="ckeditor" name="mensaje" required="required"></textarea>
-		      	<input type="hidden" name="sid" value="<?= base64_encode($sid); ?>" />
-		      	<input type="hidden" name="utm_id" value="<?= $utm_id; ?>" />
-		      	<input type="hidden" name="utm_campaign" value="<?= $utm_campaign; ?>" />
-		      	<input type="hidden" name="utm_source" value="<?= $utm_source; ?>" />
-		      	<input type="hidden" name="utm_medium" value="<?= $utm_medium; ?>" />
-		      	<input type="hidden" name="utm_content" value="<?= $utm_content; ?>" />
-		      	<input type="hidden" name="utm_term" value="<?= $utm_term; ?>" />
-		      	<input type="hidden" name="fbclid" value="<?= $fbclid; ?>" />
-		      	<input type="hidden" name="gclid" value="<?= $gclid; ?>" />
-		      	<input type="hidden" name="url" value="<?= base64_encode($location); ?>" />
-		      	<input type="hidden" name="ip_cli" value="<?= base64_encode($ip_cli); ?>" />
-		      	<input type="hidden" name="nav_cli" value="<?= base64_encode($nav_cli); ?>" />
-		      	<input type="hidden" name="sist_cli" value="<?= base64_encode($sist_cli); ?>" />
-				<button type="submit" name="guardar" class="site-btn">Enviar Mensaje</button>
+			  	<input type="hidden" name="sid" value="<?= base64_encode($sid); ?>" />
+			  	<input type="hidden" name="utm_id" value="<?= $utm_id; ?>" />
+			  	<input type="hidden" name="utm_campaign" value="<?= $utm_campaign; ?>" />
+			  	<input type="hidden" name="utm_source" value="<?= $utm_source; ?>" />
+			  	<input type="hidden" name="utm_medium" value="<?= $utm_medium; ?>" />
+			  	<input type="hidden" name="utm_content" value="<?= $utm_content; ?>" />
+			  	<input type="hidden" name="utm_term" value="<?= $utm_term; ?>" />
+			  	<input type="hidden" name="fbclid" value="<?= $fbclid; ?>" />
+			  	<input type="hidden" name="gclid" value="<?= $gclid; ?>" />
+			  	<input type="hidden" name="url" value="<?= base64_encode($location); ?>" />
+			  	<input type="hidden" name="ip_cli" value="<?= base64_encode($ip_cli); ?>" />
+			  	<input type="hidden" name="nav_cli" value="<?= base64_encode($nav_cli); ?>" />
+			  	<input type="hidden" name="sist_cli" value="<?= base64_encode($sist_cli); ?>" />
+				<button type="submit" id="enviar" name="guardar" class="site-btn btn-block">Enviar Mensaje</button>
+				<button type="button" id="enviando" class="btn btn-danger btn-btn-block" style="display: none;">Enviando Mensaje....</button>
 			</form>
 		</div>
 	</section>
@@ -73,6 +74,19 @@
 	<!--====== Javascripts & Jquery ======-->
 		<?php include_once($rut.CONF.'4java.php'); ?>
 		<?php require_once($rut.'sistem/3toastr.php'); ?>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('#enviar').click(function() {
+					$('#enviar').hide();
+					$('#enviando').show();
+					//-----------------------------
+					setTimeout(function() {
+						$('#enviar').show();
+						$('#enviando').hide();
+					}, 5000);
+				});
+			});
+		</script>
 </html>
 <?php
 	if (isset($_SESSION['Mysqli_Error'])) { unset($_SESSION['Mysqli_Error']); }

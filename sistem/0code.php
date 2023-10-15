@@ -1,7 +1,7 @@
 <?php
 require_once($rut2.'config/constant.php');
 //------------------------------------
-$location = HTTP.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+$_SESSION['location'] = $location = HTTPS.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 //------------------------------------
 /*
 if ($_SERVER['REQUEST_URI'] == DIRERR) {
@@ -20,4 +20,4 @@ $pid=0;
 $bot=' <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>';
 //------------------------------------
 if (isset($_SESSION['sid'])) { $sid = $_SESSION['sid']; }else{ $sid = $_SESSION['sid'] = session_id(); }
-if (isset($_REQUEST['p'])) { $pid = base64_decode($_REQUEST['p']); }
+if (isset($_REQUEST['p'])) { $pid = base64_decode($_REQUEST['p']); }else{ $pid = 0; }

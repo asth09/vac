@@ -61,23 +61,23 @@
 				<form class="col-sm-12" method="post" enctype="multipart/form-data" action="<?= ACTI.$direc; ?>">
 					<div class="card">
 					  <div class="card-header">
-					    Editar el <?= $padre; ?>
+						Editar el <?= $padre; ?>
 					  </div>
 					  <div class="card-body">
-					    <div class="form-group">
-				            <label for="recipient-name" class="col-form-label">Nombre:</label>
-				            <input type="text" class="form-control" name="nombre" value="<?= $inf->nombre; ?>" required="required">
-				          </div>
-				          <div class="form-group">
-				            <label for="message-text" class="col-form-label">Descripción:</label>
-				            <textarea class="form-control ckeditor" id="ckeditor" name="descrip"><?= $inf->descrip; ?></textarea>
-				          </div>
-				          <div class="form-group">
-				          	<input type="hidden" name="imagen_ant" value="<?= $inf->imagen; ?>">
-				          	<?php if (strlen($inf->imagen) > 5): ?>
-				          		<img  style="max-width: 350px; max-height: 400px;" src="<?= IMG; ?>cursos/<?= $inf->imagen; ?>">
-				          	<?php endif ?>				          	
-				          </div>				          
+						<div class="form-group">
+							<label for="recipient-name" class="col-form-label">Nombre:</label>
+							<input type="text" class="form-control" name="nombre" value="<?= $inf->nombre; ?>" required="required">
+						  </div>
+						  <div class="form-group">
+							<label for="message-text" class="col-form-label">Descripción:</label>
+							<textarea class="form-control ckeditor" id="ckeditor" name="descrip"><?= $inf->descrip; ?></textarea>
+						  </div>
+						  <div class="form-group">
+						  	<input type="hidden" name="imagen_ant" value="<?= $inf->imagen; ?>">
+						  	<?php if (strlen($inf->imagen) > 5): ?>
+						  		<img  style="max-width: 350px; max-height: 400px;" src="<?= IMG; ?>cursos/<?= $inf->imagen; ?>">
+						  	<?php endif ?>						  	
+						  </div>						  
 						  <div class="form-group">
 							<label for="recipient-name" class="col-form-label">Foto:</label>
 							<div class="custom-file">
@@ -86,13 +86,13 @@
 							</div>
 						  </div>
 						  <hr>
-				          <div class="form-group">
-						    <input type="hidden" name="pid" value="<?= base64_encode($pid); ?>">
-		      				<input type="hidden" name="sid" value="<?= base64_encode($sid); ?>">
-		      				<input type="hidden" name="url" value="<?= base64_encode($location); ?>">
-						    <a href="../" class="btn btn-secondary">Regresar</a>
-						    <button type="submit" name="editar" class="btn btn-primary">Editar <i class="fa fa-edit"></i></button>
-				          </div>
+						  <div class="form-group">
+							<input type="hidden" name="pid" value="<?= base64_encode($pid); ?>">
+			  				<input type="hidden" name="sid" value="<?= base64_encode($sid); ?>">
+			  				<input type="hidden" name="url" value="<?= base64_encode($location); ?>">
+							<a href="../" class="btn btn-secondary">Regresar</a>
+							<button type="submit" name="editar" class="btn btn-primary">Editar <i class="fa fa-edit"></i></button>
+						  </div>
 					  </div>
 					</div>
 				</form>

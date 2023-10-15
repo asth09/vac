@@ -1,15 +1,20 @@
 <?php
 	$ru0='../';
 	$cls = array(
-		"dbs"	=>	"db",
+		"dbs"	=>	"database",
 		"cl0"	=>	"correo",
 		"cl1"	=>	"contacto",
 	);
 	$di1=$cls['cl1'].'/';
 	$di2=$di1.'detalle/?p=';
 	$dt = array();$json = new stdClass();
+	//------------------------------
+	$_tbl = new stdClass();
+	$_tbl->tname = $cls['cl1'];
+	$_tbl->tid = 'id';
+	$_tbl->pid = 0;
 	//-------------------------------
-	function index($rut){
+	function index($rut,$url){
 		global $cls;
 		require_once($rut.DIRMOR.$cls['dbs'].'.php');
 		require_once($rut.DIRMOR.$cls['cl1'].'.php');
@@ -17,7 +22,22 @@
 		$_cl1 = new $cls['cl1']();
 		$data = new stdClass();
 		//-------------------------------
-		$data->inf = $_cl1->listar($_dbs->conect01());
+		$data->inf = $_cl1->listar($url);
+		//-------------------------------
+		return $data;
+	}
+	function detalle($rut,$pid){
+		global $cls,$_tbl;
+		require_once($rut.DIRMOR.$cls['dbs'].'.php');
+		require_once($rut.DIRMOR.$cls['cl1'].'.php');
+		$_dbs = new $cls['dbs']();
+		$_cl1 = new $cls['cl1']();
+		$data = new stdClass();
+		//----------------------------------------
+		$_tbl->pid = $pid;
+		//-------------------------------
+		$data->inf = $_dbs->db_get_id(NULL,$_tbl);
+		$data->seg = $_cl1->listarSeg($pid);
 		//-------------------------------
 		return $data;
 	}
@@ -29,20 +49,7 @@
 		$_cl1 = new $cls['cl1']();
 		$data = new stdClass();
 		//-------------------------------
-		$data->inf = $_cl1->exportar($_dbs->conect01());
-		//-------------------------------
-		return $data;
-	}
-	function detalle($rut,$pid){
-		global $cls;
-		require_once($rut.DIRMOR.$cls['dbs'].'.php');
-		require_once($rut.DIRMOR.$cls['cl1'].'.php');
-		$_dbs = new $cls['dbs']();
-		$_cl1 = new $cls['cl1']();
-		$data = new stdClass();
-		//-------------------------------
-		$data->inf = $_cl1->callID($_dbs->conect01(),$pid);
-		$data->seg = $_cl1->listarSeg($_dbs->conect01(),$pid);
+		$data->inf = $_cl1->exportar();
 		//-------------------------------
 		return $data;
 	}
@@ -55,6 +62,9 @@
 			require_once($ru0.DIRMOR.$cls['cl1'].'.php');
 			$_dbs = new $cls['dbs']();
 			$_cl1 = new $cls['cl1']();
+			//----------------------------------------
+			$_tbl->success = 'add';
+			$_tbl->danger = 'no'.$_tbl->success;
 			//----------------------------------------
 			$nombre = filter_var($_POST['nombre'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
 			$correo = filter_var($_POST['correo'], FILTER_SANITIZE_EMAIL);
@@ -72,11 +82,7 @@
 			$fbclid = filter_var($_POST['fbclid'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
 			$gclid = filter_var($_POST['gclid'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH);
 			//----------------------------------------
-			$json->table = 1;//contacto
-			$json->success = 'add';
-			$json->danger = 'noadd';
-			//----------------------------------------
-			$dt = array(
+			$add = array(
 				"nombre"	=>	$nombre,
 				"correo"	=>	$correo,
 				"telefono"	=>	$telefono,
@@ -97,7 +103,7 @@
 			//----------------------------------------
 			$url = base64_decode($_POST['url']);
 			//----------------------------------------
-			$resp = $_cl1->add($_dbs->conect01(),$dt, $json);
+			$resp = $_dbs->db_add($add, $_tbl);
 			if ($resp->result) {
 				$html = null;
 				//----------------------------------------
@@ -115,14 +121,14 @@
 				$html .= '<div>';
 					$html .= '<h4>Sus datos son:</h4>';
 					$html .= '<ul>';
-						$html .= '<li>Nombre: <b>'.$dt['nombre'].'</b></li>';
-						$html .= '<li>Correo: <b>'.$dt['correo'].'</b></li>';
-						$html .= '<li>Teléfono: <b>'.$dt['telefono'].'</b></li>';
+						$html .= '<li>Nombre: <b>'.$add['nombre'].'</b></li>';
+						$html .= '<li>Correo: <b>'.$add['correo'].'</b></li>';
+						$html .= '<li>Teléfono: <b>'.$add['telefono'].'</b></li>';
 					$html .= '</ul>';
 				$html .= '</div>';
 				$html .= '<div>';
 					$html .= '<h4>Su mensaje es:</h4>';
-					$html .= '<p>'.$dt['mensaje'].'</p>';
+					$html .= '<p>'.$add['mensaje'].'</p>';
 				$html .= '</div>';
 				//----------------------------------------
 				if (SCHU == '_qas') {
@@ -165,11 +171,11 @@
 			$_dbs = new $cls['dbs']();
 			$_cl1 = new $cls['cl1']();
 			//----------------------------------------
-			$json->table = 2;//seg_contacto
-			$json->success = 'add';
-			$json->danger = 'noadd';
+			$_tbl->tname = 'seg_contacto';//seg_contacto
+			$_tbl->success = 'add';
+			$_tbl->danger = 'no'.$_tbl->success;
 			//----------------------------------------
-			$dt = array(
+			$add = array(
 				"id"	=>	base64_decode($_POST['pid']),
 				"respuesta"	=>	str_replace("'", '´', $_POST['respuesta']),
 				"created_at"	=>	date('Y-m-d H:i:s')
@@ -177,7 +183,7 @@
 			//----------------------------------------
 			$url = base64_decode($_POST['url']);
 			//----------------------------------------
-			$resp = $_cl1->add($_dbs->conect01(), $dt, $json);
+			$resp = $_dbs->db_add($add, $_tbl);
 			$_SESSION['stat'] = $resp->inf;
 			$_SESSION['sql'] = $resp->sql;
 			//----------------------------------------
@@ -195,25 +201,27 @@
 		//----------------------------------------
 		if (isset($_SESSION['sid'])) {
 			require_once($ru0.DIRMOR.$cls['dbs'].'.php');
-			require_once($ru0.DIRMOR.$cls['cl1'].'.php');
 			$_dbs = new $cls['dbs']();
-			$_cl1 = new $cls['cl1']();
 			//----------------------------------------
-			$json->table = 1;//contacto
-			$json->pid = base64_decode($_REQUEST['p']);
+			$_tbl->success = (($_REQUEST['met'] == 'acti') ?  'active' : 'desactive');
+			$_tbl->danger = 'no'.$_tbl->success;
+			$_tbl->pid = base64_decode($_REQUEST['pid']);
 			//----------------------------------------
 			$dt = array(
-				"status"	=>	(($_REQUEST['met'] == 'acti') ?  1 : 0),
-				"updated_at"	=>	date('Y-m-d H:i:s')
+				"id_updated"	=>	1,
+				"updated_at"	=>	date('Y-m-d H:i:s'),
+				"status"	=>	(($_REQUEST['met'] == 'acti') ?  1 : 0)
 			);
 			//----------------------------------------
-			$resp = $_cl1->estado($_dbs->conect01(),$dt,$json);
+			$url = base64_decode($_REQUEST['url']);
+			//----------------------------------------
+			$resp = $_dbs->db_edit($dt,$_tbl);
 			$_SESSION['stat'] = $resp->inf;
 			$_SESSION['sql'] = $resp->sql;
 			//----------------------------------------
 			$_REQUEST = null;
 			//----------------------------------------
-			header("Location: ".SIST.$di1);
+			header("Location: ".$url);
 			exit();
 		}else{
 			include_once($ru0.'403.shtml');
@@ -225,21 +233,21 @@
 		//----------------------------------------
 		if (isset($_SESSION['sid'])) {
 			require_once($ru0.DIRMOR.$cls['dbs'].'.php');
-			require_once($ru0.DIRMOR.$cls['cl1'].'.php');
 			$_dbs = new $cls['dbs']();
-			$_cl1 = new $cls['cl1']();
 			//----------------------------------------
-			$json->table = 1;//contacto
-			$json->pid = base64_decode($_POST['pid']);
+			$_tbl->success = 'drop';
+			$_tbl->danger = 'no'.$_tbl->success;
+			$_tbl->pid = base64_decode($_POST['pid']);
 			//----------------------------------------
 			$dt = array(
-				"status"	=>	2,
-				"drop_at"	=>	date('Y-m-d H:i:s')
+				"id_drop"	=>	1,
+				"drop_at"	=>	date('Y-m-d H:i:s'),
+				"status"	=>	2
 			);
 			//----------------------------------------
 			$url = base64_decode($_POST['url']);
 			//----------------------------------------
-			$resp = $_cl1->estado($_dbs->conect01(),$dt,$json);
+			$resp = $_dbs->db_edit($dt,$_tbl);
 			$_SESSION['stat'] = $resp->inf;
 			$_SESSION['sql'] = $resp->sql;
 			//----------------------------------------
@@ -257,21 +265,22 @@
 		//----------------------------------------
 		if (isset($_SESSION['sid'])) {
 			require_once($ru0.DIRMOR.$cls['dbs'].'.php');
-			require_once($ru0.DIRMOR.$cls['cl1'].'.php');
 			$_dbs = new $cls['dbs']();
-			$_cl1 = new $cls['cl1']();
 			//----------------------------------------
-			$json->table = 2;//seg_contacto
-			$json->pid = base64_decode($_POST['pid']);
+			$_tbl->tname = 'seg_contacto';//seg_contacto
+			$_tbl->success = 'drop';
+			$_tbl->danger = 'no'.$_tbl->success;
+			$_tbl->pid = base64_decode($_POST['pid']);
 			//----------------------------------------
-			$dt = array(
-				"status"	=>	2,
-				"drop_at"	=>	date('Y-m-d H:i:s')
+			$drop = array(
+				"id_drop"	=>	1,
+				"drop_at"	=>	date('Y-m-d H:i:s'),
+				"status"	=>	2
 			);
 			//----------------------------------------
 			$url = base64_decode($_POST['url']);
 			//----------------------------------------
-			$resp = $_cl1->estado($_dbs->conect01(),$dt,$json);
+			$resp = $_dbs->db_edit($drop,$_tbl);
 			$_SESSION['stat'] = $resp->inf;
 			$_SESSION['sql'] = $resp->sql;
 			//----------------------------------------

@@ -1,18 +1,20 @@
 <?php
 require_once($rut.'config/constant.php');
 //------------------------------------
-$location = HTTP.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+$_SESSION['location'] = $location = HTTPS.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 //------------------------------------
-/*if ($_SERVER['REQUEST_URI'] == DIRERR) {
+if ($_SERVER['REQUEST_URI'] == DIRERR) {
 }else if ($_SERVER['REQUEST_URI'] == DIR) {
 }else{
+	/*
 	if (!isset($_SESSION['user_id'])) {
 		$_SESSION['_dir_url'] = base64_encode($_SERVER['REQUEST_URI']);
 		//-----------------------------------------------------------------------
 		header("Location: ".LOGI);
 		exit();
 	}
-}*/
+	*/
+}
 //------------------------------------
 $pid=0;$nav=null;$sist=null;
 $ip_cli = $_SERVER['REMOTE_ADDR'];

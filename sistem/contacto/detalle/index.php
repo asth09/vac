@@ -79,29 +79,29 @@
 				<form class="col-sm-12" method="post" enctype="multipart/form-data" action="<?= ACTI.$direc; ?>">
 					<div class="card">
 					  <div class="card-header">
-					    Información del <?= $padre; ?>
+						Información del <?= $padre; ?>
 					  </div>
 					  <div class="card-body">
-					    <div class="form-group">
-				            <label for="recipient-name" class="col-form-label">Nombre:</label>
-				            <label class="form-control"><?= $inf->nombre; ?></label>
-				          </div>
-				          <div class="form-group">
-				            <label for="message-text" class="col-form-label">Correo:</label>
-				            <label class="form-control"><?= $inf->correo; ?></label>
-				          </div>
-				          <div class="form-group">
-				            <label for="message-text" class="col-form-label">Teléfono:</label>
-				            <label class="form-control"><?= $inf->telefono; ?></label>
-				          </div>
-				          <div class="form-group">
-				          	<div class="card">
-				          		<h4 class="title-card">Mensaje del Cliente:</h4>
-				          		<div class="card-body">
-				          			<?= $inf->mensaje; ?>
-				          		</div>
-				          	</div>
-				          </div>
+						<div class="form-group">
+							<label for="recipient-name" class="col-form-label">Nombre:</label>
+							<label class="form-control"><?= $inf->nombre; ?></label>
+						  </div>
+						  <div class="form-group">
+							<label for="message-text" class="col-form-label">Correo:</label>
+							<label class="form-control"><?= $inf->correo; ?></label>
+						  </div>
+						  <div class="form-group">
+							<label for="message-text" class="col-form-label">Teléfono:</label>
+							<label class="form-control"><?= $inf->telefono; ?></label>
+						  </div>
+						  <div class="form-group">
+						  	<div class="card">
+						  		<h4 class="title-card">Mensaje del Cliente:</h4>
+						  		<div class="card-body">
+						  			<?= $inf->mensaje; ?>
+						  		</div>
+						  	</div>
+						  </div>
 					  </div>
 					</div>
 				</form>
@@ -143,73 +143,72 @@
 	<?php require_once($rut.'3toastr.php'); ?>
 	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
-	    <div class="modal-content">
-	      <form method="POST" enctype="multipart/form-data" action="<?= ACTI.$direc; ?>">
-		      <div class="modal-header">
-		        <h5 class="modal-title" id="exampleModalLabel">Nuevo Seguimiento</h5>
-		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		          <span aria-hidden="true">&times;</span>
-		        </button>
-		      </div>
-		      <div class="modal-body">
-		          <div class="form-group">
-		            <label for="message-text" class="col-form-label">Respuesta:</label>
-		            <textarea class="form-control ckeditor" id="ckeditor" name="respuesta"></textarea>
-		          </div>
-		      </div>
-		      <div class="modal-footer">
+		<div class="modal-content">
+		  <form method="POST" enctype="multipart/form-data" action="<?= ACTI.$direc; ?>">
+			  <div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Nuevo Seguimiento</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true">&times;</span>
+				</button>
+			  </div>
+			  <div class="modal-body">
+				  <div class="form-group">
+					<label for="message-text" class="col-form-label">Respuesta:</label>
+					<textarea class="form-control ckeditor" id="ckeditor" name="respuesta"></textarea>
+				  </div>
+			  </div>
+			  <div class="modal-footer">
 				<input type="hidden" name="pid" value="<?= base64_encode($pid); ?>">
-		      	<input type="hidden" name="sid" value="<?= base64_encode($sid); ?>">
-		      	<input type="hidden" name="url" value="<?= base64_encode($location); ?>">
-		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-		        <button type="submit" name="addSeg" class="btn btn-primary">Guardar Seguimiento</button>
-		      </div>
-	      </form>
-	    </div>
+			  	<input type="hidden" name="sid" value="<?= base64_encode($sid); ?>">
+			  	<input type="hidden" name="url" value="<?= base64_encode($location); ?>">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+				<button type="submit" name="addSeg" class="btn btn-primary">Guardar Seguimiento</button>
+			  </div>
+		  </form>
+		</div>
 	  </div>
 	</div>
-    <script>
-        function dropSeg(datos){
-            var infor=datos.split("||");
-            /*
-            Divide la cadena a array por este caracter: ( || )
-            	'MQ==||Comunicación||'			cadena que recibe y la divide dentro de un array de la siguiente manera:
-            	$infor[0] = 'MQ=='				valor 0
-            	$infor[1] = 'Comunicación'		valor 1
-            	$infor[2] = ''					valor 2
-            */
-            //--------------------------------
-            $('#dropid').val(infor[0]);
-            $('#nombre_curso').html(infor[1]);
-        }
-    </script>
 	<div class="modal fade" id="dropSeg" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
-	    <div class="modal-content">
-	      <form method="POST" action="<?= ACTI.$direc; ?>">
-		      <div class="modal-header">
-		        <h5 class="modal-title" id="exampleModalLabel">Eliminar <?= substr($pagina, 0, -1); ?></h5>
-		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		          <span aria-hidden="true">&times;</span>
-		        </button>
-		      </div>
-		      <div class="modal-body">
-		          <div class="form-group">
-		          	<p>¿Está seguro de <b>Eliminar el Registro:</b>?</p>
-		          </div>
-		      </div>
-		      <div class="modal-footer">
-		        <input type="hidden" name="pid" id="dropid">
-		      	<input type="hidden" name="sid" value="<?= base64_encode($sid); ?>">
-		      	<input type="hidden" name="url" value="<?= base64_encode($location); ?>">
-		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-		        <button type="submit" name="dropSeg" class="btn btn-primary">Borrar el <?= substr($pagina, 0, -1); ?></button>
-		      </div>
-	      </form>
-	    </div>
+		<div class="modal-content">
+		  <form method="POST" action="<?= ACTI.$direc; ?>">
+			  <div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Eliminar <?= substr($pagina, 0, -1); ?></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true">&times;</span>
+				</button>
+			  </div>
+			  <div class="modal-body">
+				  <div class="form-group">
+				  	<p>¿Está seguro de <b>Eliminar el Registro:</b>?</p>
+				  </div>
+			  </div>
+			  <div class="modal-footer">
+				<input type="hidden" id="dropid" name="pid">
+			  	<input type="hidden" name="sid" value="<?= base64_encode($sid); ?>">
+			  	<input type="hidden" name="url" value="<?= base64_encode($location); ?>">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+				<button type="submit" name="dropSeg" class="btn btn-primary">Borrar el <?= substr($pagina, 0, -1); ?></button>
+			  </div>
+		  </form>
+		</div>
 	  </div>
 	</div>
-	</body>
+	<script>
+		function dropSeg(datos){
+			var infor=datos.split("||");
+			/*
+			Divide la cadena a array por este caracter: ( || )
+				'MQ==||Comunicación||'			cadena que recibe y la divide dentro de un array de la siguiente manera:
+				$infor[0] = 'MQ=='				valor 0
+				$infor[1] = 'Comunicación'		valor 1
+				$infor[2] = ''					valor 2
+			*/
+			//--------------------------------
+			$('#dropid').val(infor[0]);
+			$('#nombre_curso').html(infor[1]);
+		}
+	</script>
 </body>
 </html>
 <?php

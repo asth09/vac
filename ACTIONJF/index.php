@@ -1,31 +1,40 @@
 <?php
 	$ru0='./';
-	$db='db';
-	$cl1='cursos';
+	$cls = array(
+		"dbs"	=>	"database",
+		"cl1"	=>	"cursos",
+	);
 	$dir1='./';
 	$dir2='./detalle.php?p=';
+	//------------------------------
+	$_json = new stdClass();
+	$_json->tname = $cls['cl1'];
+	$_json->tid = 'id';
+	$_json->pid = 0;
 	//-----------------------------
 	function index($rut){
-		global $db, $cl1;
-		require_once($rut.DIRMOR.$db.'.php');
-		require_once($rut.DIRMOR.$cl1.'.php');
-		$_db = new $db();
-		$_cl1 = new $cl1();
+		global $cls;
+		require_once($rut.DIRMOR.$cls['dbs'].'.php');
+		require_once($rut.DIRMOR.$cls['cl1'].'.php');
+		$_dbs = new $cls['dbs']();
+		$_cl1 = new $cls['cl1']();
 		$data = new stdClass();
 		//----------------------------------------
-		$data->inf = $_cl1->cliente($_db->conect01(),$_db->conect01());
+		$data->inf = $_cl1->cliente();
 		//----------------------------------------
 		return $data;
 	}
 	function detalle($rut,$pid){
-		global $db, $cl1;
-		require_once($rut.DIRMOR.$db.'.php');
-		require_once($rut.DIRMOR.$cl1.'.php');
-		$_db = new $db();
-		$_cl1 = new $cl1();
+		global $cls, $_json;
+		require_once($rut.DIRMOR.$cls['dbs'].'.php');
+		require_once($rut.DIRMOR.$cls['cl1'].'.php');
+		$_dbs = new $cls['dbs']();
+		$_cl1 = new $cls['cl1']();
 		$data = new stdClass();
 		//----------------------------------------
-		$data->inf = $_cl1->callID($_db->conect01(),$pid);
+		$_json->pid = $pid;
+		//----------------------------------------
+		$data->inf = $_dbs->db_get_id(NULL, $_json);
 		//----------------------------------------
 		return $data;
 	}

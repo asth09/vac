@@ -1,7 +1,7 @@
 <?php
 	$ru0='../';
 	$cls = array(
-		"dbs"	=>	"db",
+		"dbs"	=>	"database",
 		"cl1"	=>	"cursos",
 	);
 	$di1=$cls['cl1'].'/';
@@ -9,7 +9,12 @@
 	$destino= $ru0."img/cursos/";
 	$dt = array();
 	//------------------------------
-	function index($rut){
+	$_tbl = new stdClass();
+	$_tbl->tname = $cls['cl1'];
+	$_tbl->tid = 'id';
+	$_tbl->pid = 0;
+	//------------------------------
+	function index($rut,$url){
 		global $cls;
 		require_once($rut.DIRMOR.$cls['dbs'].'.php');
 		require_once($rut.DIRMOR.$cls['cl1'].'.php');
@@ -17,32 +22,34 @@
 		$_cl1 = new $cls['cl1']();
 		$data = new stdClass();
 		//----------------------------------------
-		$data->inf = $_cl1->listar($_dbs->conect01());
-		//----------------------------------------
-		return $data;
-	}
-	function exportar($rut,$tip){
-		global $cls;
-		require_once($rut.DIRMOR.$cls['dbs'].'.php');
-		require_once($rut.DIRMOR.$cls['cl1'].'.php');
-		$_dbs = new $cls['dbs']();
-		$_cl1 = new $cls['cl1']();
-		$data = new stdClass();
-		//----------------------------------------
-		$data->inf = $_cl1->exportar($_dbs->conect01(),$tip);
+		$data->inf = $_cl1->listar($url);
 		//----------------------------------------
 		return $data;
 	}
 	function detalle($rut,$pid){
-		global $cls;
+		global $cls, $_tbl;
 		require_once($rut.DIRMOR.$cls['dbs'].'.php');
 		require_once($rut.DIRMOR.$cls['cl1'].'.php');
 		$_dbs = new $cls['dbs']();
 		$_cl1 = new $cls['cl1']();
 		$data = new stdClass();
 		//----------------------------------------
-		$data->inf = $_cl1->callID($_dbs->conect01(),$pid);
+		$_tbl->pid = $pid;
 		//----------------------------------------
+		$data->inf = $_dbs->db_get_id(NULL, $_tbl);
+		//----------------------------------------
+		return $data;
+	}
+	function exportar($rut){
+		global $cls;
+		require_once($rut.DIRMOR.$cls['dbs'].'.php');
+		require_once($rut.DIRMOR.$cls['cl1'].'.php');
+		$_dbs = new $cls['dbs']();
+		$_cl1 = new $cls['cl1']();
+		$data = new stdClass();
+		//-------------------------------
+		$data->inf = $_cl1->exportar();
+		//-------------------------------
 		return $data;
 	}
 	if (isset($_POST['guardar'])) {
@@ -51,9 +58,10 @@
 		//----------------------------------------
 		if (isset($_SESSION['sid'])) {
 			require_once($ru0.DIRMOR.$cls['dbs'].'.php');
-			require_once($ru0.DIRMOR.$cls['cl1'].'.php');
 			$_dbs = new $cls['dbs']();
-			$_cl1 = new $cls['cl1']();
+			//----------------------------------------
+			$_tbl->success = 'add';
+			$_tbl->danger = 'no'.$_tbl->success;
 			//----------------------------------------
 			$nombre = filter_var($_POST['nombre'], FILTER_SANITIZE_STRING);
 			$descrip = str_replace("'", '´', $_POST['descrip']);
@@ -69,7 +77,7 @@
 				$sub_file = false;
 			}
 			//----------------------------------------
-			$dt = array(
+			$add = array(
 				"nombre"	=>	$nombre,
 				"descrip"	=>	$descrip,
 				"imagen"	=>	$imagen,
@@ -78,7 +86,7 @@
 			//----------------------------------------
 			$url = base64_decode($_POST['url']);
 			//----------------------------------------
-			$resp = $_cl1->add($_dbs->conect01(),$dt);
+			$resp = $_dbs->db_add($add,$_tbl);
 			if ($resp->result) {
 				if ($sub_file) {
 					move_uploaded_file($_FILES["imagen"]["tmp_name"], $destino.$imagen);
@@ -101,11 +109,12 @@
 		//----------------------------------------
 		if (isset($_SESSION['sid'])) {
 			require_once($ru0.DIRMOR.$cls['dbs'].'.php');
-			require_once($ru0.DIRMOR.$cls['cl1'].'.php');
 			$_dbs = new $cls['dbs']();
-			$_cl1 = new $cls['cl1']();
 			//----------------------------------------
-			$pid = base64_decode($_POST['pid']);
+			$_tbl->pid = base64_decode($_POST['pid']);
+			$_tbl->success = 'edit';
+			$_tbl->danger = 'no'.$_tbl->success;
+			//----------------------------------------
 			$nombre = filter_var($_POST['nombre'], FILTER_SANITIZE_STRING);
 			$descrip = str_replace("'", '´', $_POST['descrip']);
 			//----------------------------------------
@@ -120,16 +129,17 @@
 				$sub_file = false;
 			}
 			//----------------------------------------
-			$dt = array(
+			$edit = array(
 				"nombre"	=>	$nombre,
 				"descrip"	=>	$descrip,
 				"imagen"	=>	$imagen,
+				"id_updated"	=>	1,
 				"updated_at"	=>	date('Y-m-d H:i:s')
 			);
 			//----------------------------------------
 			$url = base64_decode($_POST['url']);
 			//----------------------------------------
-			$resp = $_cl1->edit($_dbs->conect01(),$dt,$pid);
+			$resp = $_dbs->db_edit($edit,$_tbl);
 			if ($resp->result) {
 				if ($sub_file) {
 					move_uploaded_file($_FILES["imagen"]["tmp_name"], $destino.$imagen);
@@ -152,24 +162,27 @@
 		//----------------------------------------
 		if (isset($_SESSION['sid'])) {
 			require_once($ru0.DIRMOR.$cls['dbs'].'.php');
-			require_once($ru0.DIRMOR.$cls['cl1'].'.php');
 			$_dbs = new $cls['dbs']();
-			$_cl1 = new $cls['cl1']();
 			//----------------------------------------
-			$pid = base64_decode($_REQUEST['p']);
+			$_tbl->success = (($_REQUEST['met'] == 'acti') ?  'active' : 'desactive');
+			$_tbl->danger = 'no'.$_tbl->success;
+			$_tbl->pid = base64_decode($_REQUEST['pid']);
 			//----------------------------------------
 			$dt = array(
-				"status"	=>	(($_REQUEST['met'] == 'acti') ?  1 : 0),
-				"updated_at"	=>	date('Y-m-d H:i:s')
+				"id_updated"	=>	1,
+				"updated_at"	=>	date('Y-m-d H:i:s'),
+				"status"	=>	(($_REQUEST['met'] == 'acti') ?  1 : 0)
 			);
 			//----------------------------------------
-			$resp = $_cl1->estado($_dbs->conect01(),$dt,$pid);
+			$url = base64_decode($_REQUEST['url']);
+			//----------------------------------------
+			$resp = $_dbs->db_edit($dt,$_tbl);
 			$_SESSION['stat'] = $resp->inf;
 			$_SESSION['sql'] = $resp->sql;
 			//----------------------------------------
 			$_REQUEST = null;
 			//----------------------------------------
-			header("Location: ".SIST.$di1);
+			header("Location: ".$url);
 			exit();
 		}else{
 			include_once($ru0.'403.shtml');
@@ -181,19 +194,21 @@
 		//----------------------------------------
 		if (isset($_SESSION['sid'])) {
 			require_once($ru0.DIRMOR.$cls['dbs'].'.php');
-			require_once($ru0.DIRMOR.$cls['cl1'].'.php');
 			$_dbs = new $cls['dbs']();
-			$_cl1 = new $cls['cl1']();
 			//----------------------------------------
-			$pid = base64_decode($_POST['pid']);
+			$_tbl->success = 'drop';
+			$_tbl->danger = 'no'.$_tbl->success;
+			$_tbl->pid = base64_decode($_POST['pid']);
+			//----------------------------------------
 			$dt = array(
-				"status"	=>	2,
-				"drop_at"	=>	date('Y-m-d H:i:s')
+				"id_drop"	=>	1,
+				"drop_at"	=>	date('Y-m-d H:i:s'),
+				"status"	=>	2
 			);
 			//----------------------------------------
 			$url = base64_decode($_POST['url']);
 			//----------------------------------------
-			$resp = $_cl1->estado($_dbs->conect01(),$dt,$pid);
+			$resp = $_dbs->db_edit($dt,$_tbl);
 			$_SESSION['stat'] = $resp->inf;
 			$_SESSION['sql'] = $resp->sql;
 			//----------------------------------------
