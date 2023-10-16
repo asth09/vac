@@ -5,7 +5,7 @@
 	class database
 	{
 		protected $db_type = 'mysqli_';
-		//private $db_ytpe = 'pg_';
+		//protected $db_ytpe = 'pg_';
 		protected $db_query = NULL;
 		protected $db_error = NULL;
 		protected $db_array = NULL;
@@ -519,6 +519,8 @@
 				return $data;
 			}
 			function db_edit_string($dt,$json){
+				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
+				//---------------------------------------------------------
 				$data = new stdClass(); $sql = null;
 				$data->error = null;
 				//----------------------------
