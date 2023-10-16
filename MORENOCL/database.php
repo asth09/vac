@@ -5,7 +5,7 @@
 	class database
 	{
 		protected $db_type = 'mysqli_';
-		//protected $db_ytpe = 'pg_';
+		//protected $db_type = 'pg_';
 		protected $db_query = NULL;
 		protected $db_error = NULL;
 		protected $db_array = NULL;
