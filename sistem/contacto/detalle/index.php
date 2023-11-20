@@ -113,19 +113,69 @@
 						</div>
 						<div class="card-body">
 							<div class="row">
-								<div class="col-sm-12">
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label class="form-control-label text-white">utm_id:</label>
+										<label class="form-control"><?= $inf->utm_id; ?></label>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label class="form-control-label text-white">utm_campaign:</label>
+										<label class="form-control"><?= $inf->utm_campaign; ?></label>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label class="form-control-label text-white">utm_source:</label>
+										<label class="form-control"><?= $inf->utm_source; ?></label>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label class="form-control-label text-white">utm_medium:</label>
+										<label class="form-control"><?= $inf->utm_medium; ?></label>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label class="form-control-label text-white">utm_content:</label>
+										<label class="form-control"><?= $inf->utm_content; ?></label>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label class="form-control-label text-white">utm_term:</label>
+										<label class="form-control"><?= $inf->utm_term; ?></label>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label class="form-control-label text-white">fbclid:</label>
+										<label class="form-control"><?= $inf->fbclid; ?></label>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="form-group">
+										<label class="form-control-label text-white">gclid:</label>
+										<label class="form-control"><?= $inf->gclid; ?></label>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-4">
 									<div class="form-group">
 										<label class="form-control-label text-white">IP del Cliente:</label>
 										<label class="form-control"><?= $inf->ip_cli; ?></label>
 									</div>
 								</div>
-								<div class="col-sm-12">
+								<div class="col-sm-4">
 									<div class="form-group">
 										<label class="form-control-label text-white">Navegador del Cliente:</label>
 										<label class="form-control"><?= $inf->nav_cli; ?></label>
 									</div>
 								</div>
-								<div class="col-sm-12">
+								<div class="col-sm-4">
 									<div class="form-group">
 										<label class="form-control-label text-white">Sistema O. del Cliente:</label>
 										<label class="form-control"><?= $inf->sist_cli; ?></label>
