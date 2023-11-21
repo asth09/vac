@@ -43,7 +43,7 @@
 		}
 		//---------------------------------------------------------
 			function connect($schu=null){
-				if (!is_null($schu)) { $name = "db".strtolower($schu); }else{ $name = "db".((isset(SCHU)) ? strtolower(SCHU) : '_qas'); }
+				if (!is_null($schu)) { $name = "db".strtolower($schu); }else{ $name = "db".strtolower(SCHU); }
 				$db_host = $this->$name;
 				//----------------------------------
 				if ($this->db_type == 'mysqli_') {
