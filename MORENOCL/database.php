@@ -832,9 +832,10 @@
 						$sql .= $this_tid." LIKE '".$json_pid."' ;";
 					break;
 					case 8://GENERRAR SENTENCIA PARA SELECT EN TABLA POR ID/CAMPO - VALOR (INT)
-						$sql = "SELECT t1.*, c.nombre_u AS user_add, c.correo_u AS mail_add, e.nombre_u AS user_edit, e.correo_u AS mail_edit FROM ".$this_table." t1 ";
-							$sql .= " LEFT JOIN usuarios c ON t1.id_created=c.id_usuario ";
-							$sql .= " LEFT JOIN usuarios e ON t1.id_updated=e.id_usuario ";
+						$sql = "SELECT t1.* FROM ".$this_table." t1 ";
+						//$sql = "SELECT t1.*, c.nombre_u AS user_add, c.correo_u AS mail_add, e.nombre_u AS user_edit, e.correo_u AS mail_edit FROM ".$this_table." t1 ";
+							//$sql .= " LEFT JOIN usuarios c ON t1.id_created=c.id_usuario ";
+							//$sql .= " LEFT JOIN usuarios e ON t1.id_updated=e.id_usuario ";
 						$sql .= " WHERE ";
 						//------------campos-adicionale------------
 							if (!is_null($adic)) {
