@@ -56,7 +56,7 @@
 				return($con);
 			}
 		//---------------------------------------------------------
-			public function db_exec($sql){
+			public function db_exec($sql,$ret_res=true){
 				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
 				//---------------------------------------------------------
 				$data = new stdClass();
@@ -64,19 +64,64 @@
 				//---------------------------------------------------------
 				$res = $fc_query($this->connect(), $sql) OR $error = $fc_error($this->connect());
 				if ($res) {
-					if ((($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res)) > 0) {
-						$data->result = true;
-						$data->cant = (($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res));
-						$data->res = $res;
+					if ($ret_res) {
+						if ((($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res)) > 0) {
+							$data->result = true;
+							$data->cant = (($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res));
+							$data->res = $res;
+						}else{
+							$data->result = false;
+							$data->cant = 0;
+							$data->res = $res;
+						}
 					}else{
-						$data->result = false;
-						$data->cant = 0;
-						$data->res = $res;
+						$data->result = true;
+						$data->mensaje = "Ejecutado exitosamente";
 					}
 				}else{
 					$data->result = false;
 					$data->cant = -1;
-					$data->res = $res;
+					if ($ret_res) {
+						$data->res = $res;
+					}
+				}
+				//---------------------------------------------------------
+				$data->error = $error;
+				//---------------------------------------------------------
+				return $data;
+			}
+			public function db_exec_sql($sql,$ret_res=true){
+				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
+				//---------------------------------------------------------
+				$data = new stdClass();
+				$error = NULL;
+				//---------------------------------------------------------
+				$res = $fc_query($this->connect(), $sql) OR $error = $fc_error($this->connect());
+				if ($res) {
+					if ($ret_res) {
+						if ((($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res)) > 0) {
+							$data->result = true;
+							$data->cant = (($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res));
+							while ($row = $fc_assoc($res)) {
+								foreach ($row as $key => $value) {
+									$data->$key = $value;
+								}
+							}
+						}else{
+							$data->result = false;
+							$data->cant = 0;
+							$data->res = null;
+						}
+					}else{
+						$data->result = true;
+						$data->mensaje = "Ejecutado exitosamente";
+					}
+				}else{
+					$data->result = false;
+					$data->cant = -1;
+					if ($ret_res) {
+						$data->res = $res;
+					}
 				}
 				//---------------------------------------------------------
 				$data->error = $error;
@@ -84,21 +129,12 @@
 				return $data;
 			}
 		//---------------------------------------------------------
-			function muestra_mysqli(){//muestra_mysqli
-				$con1 = mysqli_connect("HOST","USUARIO","CONTRASEÑA");
-				mysqli_select_db($con1,"BASE DE DATOS");
-				return($con1);
-			}
 			function muestra_sql(){//muestra_sqlsrv
 				$serverName = "serverName\sqlexpress"; //serverName\instanceName
 				//$serverName = "serverName\sqlexpress, 1542"; //serverName\instanceName, portNumber (por defecto es 1433)
 				//$connectionInfo = array( "Database"=>"dbName");
 				$connectionInfo = array( "Database"=>"dbName", "UID"=>"userName", "PWD"=>"password");
 				$con1 = sqlsrv_connect($serverName, $connectionInfo);
-				return($con1);
-			}
-			function muestra_pg(){//muestra_pgsql
-				$con1 = mysqli_connect("host=127.0.0.1 port=1234 dbname=vac user=admin password=admin");
 				return($con1);
 			}
 		//---------------------------------------------------------
@@ -131,7 +167,7 @@
 				//-----------------------------
 				return $inf;
 			}
-			function sum_fecha($campo,$fecha){
+			function sum_fecha($campo,$fecha,$time){
 				if ($campo == 1 && !is_null($fecha)) {
 					// Verificar si la fecha tiene el formato DD/MM/YYYY
 					$fecha_formato_dmy = DateTime::createFromFormat('d/m/Y', $fecha);
@@ -147,8 +183,18 @@
 					// Convertir a objeto DateTime
 					$fecha_obj = DateTime::createFromFormat('Y-m-d', $nueva_fecha);
 					//-----------------------------------
+					$tiempo = 'P';
+					if (isset($time->años) && $time->años==true) { $tiempo .= $time->cant_años.'Y'; }
+					if (isset($time->meses) && $time->meses==true) { $tiempo .= $time->cant_meses.'M'; }
+					if (isset($time->semanas) && $time->semanas==true) { $tiempo .= $time->cant_semanas.'W'; }
+					if (isset($time->dias) && $time->dias==true) { $tiempo .= $time->cant_dias.'D'; }
+					if (isset($time->tiempo) && $time->tiempo==true) { $tiempo .= 'T'; }
+					if (isset($time->hor) && $time->hor==true) { $tiempo .= $time->cant_hor.'H'; }
+					if (isset($time->min) && $time->min==true) { $tiempo .= $time->cant_min.'M'; }
+					if (isset($time->seg) && $time->seg==true) { $tiempo .= $time->cant_seg.'S'; }
+					//-----------------------------------
 					// Sumar un año
-					$fecha_obj->add(new DateInterval('P1Y'));
+					$fecha_obj->add(new DateInterval($tiempo));
 					//-----------------------------------
 					// Obtener la nueva fecha en formato 'Y-m-d'
 					$nueva_fecha = $fecha_obj->format('Y-m-d');
@@ -413,6 +459,78 @@
 				$fc_close($this->connect());
 				return $data;
 			}
+			function db_add_all($dt,$json){
+				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
+				//---------------------------------------------------------
+				$data = new stdClass(); $sql = null; $result = array(); $fila_res = array();
+				$data->error = null;
+				//----------------------------
+				$er=1;$n=0;
+				if(is_null($json->tname)){ $er=0; }
+				//----------------------------
+				if ($er == 1) {
+					foreach ($dt as $fila) {
+						$fila_res = array();
+						//-----------------------------
+						if (!is_null($fila[$json->t_camp])) {
+							$sql = $this->get_sql($json->tname, $fila, 1);
+							try {
+								$res = $fc_query($this->connect(),$sql) OR $data->error .= ($fc_error($this->connect()));
+								if ($res) {
+									$fila_res = array(
+										"result"	=>	true,
+										"inf"	=>	$json->success,
+										"mensaje"	=>	"Registro agregado exitosamente.",
+									);
+									//-----------------------------
+									array_push($result, $fila_res);
+								}else{
+									$fila_res = array(
+										"result"	=>	false,
+										"inf"	=>	$json->danger,
+										"mensaje"	=>	"No se logró agregar los datos.",
+									);
+									//-----------------------------
+									array_push($result, $fila_res);
+								}
+							} catch (Exception $e) {
+								$fila_res = array(
+									"result"	=>	false,
+									"inf"	=>	$json->danger,
+									"mensaje"	=>	"No se logró agregar, Ya existe un valor igual.",
+								);
+								//-----------------------------
+								array_push($result, $fila_res);
+							}
+						}else{
+							$fila_res = array(
+								"result"	=>	false,
+								"inf"	=>	$json->danger,
+								"mensaje"	=>	"El primer campo está vacío, por ello no se agregó la fila: ".$n,
+							);
+							//-----------------------------
+							array_push($result, $fila_res);
+						}
+						//----------------------------
+						$n++;
+					}
+				}else{
+					$fila_res = array(
+						"result"	=>	false,
+						"inf"	=>	'null',
+						"mensaje"	=>	"No existe el nombre de la tabla.",
+					);
+					//-----------------------------
+					array_push($result, $fila_res);
+				}
+				//------------------
+				//$data->sql = $sql;
+				$data->res = (($n > 1000) ? $result[0] : $result);
+				$data->rows = $n;
+				//------------------
+				$fc_close($this->connect());
+				return $data;
+			}
 			function db_add_ret($dt,$json){
 				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
 				//---------------------------------------------------------
@@ -602,7 +720,32 @@
 				return $data;
 			}
 		//---------------------------------------------------------
-			public function get_sql(
+			function get_datos($pid,$type){
+				$data = new stdClass();
+				//---------------------------------------------------------
+				switch ($type) {
+					case 'user':
+						$sql = "SELECT * FROM usuarios WHERE id_usuario=".$pid." LIMIT 1 ;";
+					break;
+					case 'placa':
+						$sql = "SELECT * FROM unidades WHERE placa LIKE '".$pid."' LIMIT 1 ;";
+					break;
+					case 'clie':
+						$sql = "SELECT * FROM clientes WHERE id_int LIKE '".$pid."' LIMIT 1 ;";
+					break;
+					default:
+						$sql = null;
+					break;
+				}
+				//---------------------------------------------------------
+				if (!is_null($sql)) {
+					$data = $this->db_exec_sql($sql);
+				}
+				//---------------------------------------------------------
+				return $data;
+			}
+		//---------------------------------------------------------
+			function get_sql(
 				$this_table, //nombre de tabla
 				$dt, //array con los datos. El nombre de las Key debe ser igual al nombre de los campos en la tabla
 				$tipo=1, //Tipo de sentencia: 1 para INSERT / 2 para UPDATE / 3 para CALL
@@ -647,20 +790,7 @@
 						$sql = "SELECT * FROM ".$this_table." WHERE ";
 						//-----------valores----------------
 							foreach ($dt as $key => $value) {
-								switch ($key) {
-									case 'created_at':
-									case 'id_created':
-									case 'updated_at':
-									case 'id_updated':
-									case 'drop_at':
-									case 'id_drop':
-									case 'motivo_drop':
-									case 'status':
-									break;
-									default:
-										$sql .= $key."='".$value."' AND ";
-									break;
-								}
+								$sql .= $key."='".$value."', ";
 							}
 						//-----------fin-valores------------
 						$sql = substr($sql, 0, -2);
@@ -702,13 +832,16 @@
 						$sql .= $this_tid." LIKE '".$json_pid."' ;";
 					break;
 					case 8://GENERRAR SENTENCIA PARA SELECT EN TABLA POR ID/CAMPO - VALOR (INT)
-						$sql = "SELECT * FROM ".$this_table." WHERE ";
+						$sql = "SELECT t1.*, c.nombre_u AS user_add, c.correo_u AS mail_add, e.nombre_u AS user_edit, e.correo_u AS mail_edit FROM ".$this_table." t1 ";
+							$sql .= " LEFT JOIN usuarios c ON t1.id_created=c.id_usuario ";
+							$sql .= " LEFT JOIN usuarios e ON t1.id_updated=e.id_usuario ";
+						$sql .= " WHERE ";
 						//------------campos-adicionale------------
 							if (!is_null($adic)) {
-								$sql .= $adic." AND ";
+								$sql .= "t1.".$adic." AND ";
 							}
 						//-----------fin-campos-adicionale---------
-						$sql .= $this_tid."=".$json_pid.";";
+						$sql .= "t1.".$this_tid."=".$json_pid.";";
 					break;
 					case 9://GENERRAR SENTENCIA PARA SELECT EN TABLA POR ID/CAMPO - VALOR (STRING)
 						$sql = "SELECT * FROM ".$this_table." WHERE ";
