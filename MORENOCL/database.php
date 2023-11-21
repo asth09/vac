@@ -5,11 +5,11 @@
 	class database
 	{
 		//-----------------------------
-		private $db_prd = 'root';//IP SERVER prd
-		private $db_qas = 'root';//IP SERVER qas
+		private $db_prd = 'localhost';//IP SERVER prd
+		private $db_qas = 'localhost';//IP SERVER qas
 		private $db_port = '5489';
-		private $db_name = 'postgres';
-		private $db_user = 'postgres';
+		private $db_name = 'vac';
+		private $db_user = 'root';
 		private $db_pass = '';
 		//---------------------------------------
 		protected $db_type = 'mysqli_';
