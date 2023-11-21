@@ -4,6 +4,14 @@
 	 */
 	class database
 	{
+		//-----------------------------
+		private $db_prd = 'root';//IP SERVER prd
+		private $db_qas = 'root';//IP SERVER qas
+		private $db_port = '5489';
+		private $db_name = 'postgres';
+		private $db_user = 'postgres';
+		private $db_pass = '';
+		//---------------------------------------
 		protected $db_type = 'mysqli_';
 		//protected $db_type = 'pg_';
 		protected $db_query = NULL;
@@ -34,12 +42,18 @@
 			$this->db_close = $this->db_type.'close';
 		}
 		//---------------------------------------------------------
-			public function connect(){//mysqli
-				//---------------------------------------------------------
-				$con1 = mysqli_connect("localhost","root","");
-				mysqli_select_db($con1,"vac");
-				//---------------------------------------------------------
-				return($con1);
+			function connect($schu=null){
+				if (!is_null($schu)) { $name = "db".strtolower($schu); }else{ $name = "db".strtolower(SCHU); }
+				$db_host = $this->$name;
+				//----------------------------------
+				if ($this->db_type == 'mysqli_') {
+					$con = mysqli_connect($db_host, $this->db_user, $this->db_pass);
+					mysqli_select_db($con, $this->db_name);
+				}else{
+					$con = pg_connect("host=".$db_host." port=".$this->db_port." dbname=".$this->db_name." user=".$this->db_user." password=".$this->db_pass);
+				}
+				//----------------------------------
+				return($con);
 			}
 		//---------------------------------------------------------
 			public function db_exec($sql){
