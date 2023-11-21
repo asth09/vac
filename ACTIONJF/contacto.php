@@ -268,6 +268,7 @@
 			$_dbs = new $cls['dbs']();
 			//----------------------------------------
 			$_tbl->tname = 'seg_contacto';//seg_contacto
+			$_tbl->tid = 'id_seg';
 			$_tbl->success = 'drop';
 			$_tbl->danger = 'no'.$_tbl->success;
 			$_tbl->pid = base64_decode($_POST['pid']);
