@@ -14,6 +14,7 @@
 		//---------------------------------------
 		protected $db_type = 'mysqli_';
 		//protected $db_type = 'pg_';
+		protected $db_conec = NULL;
 		protected $db_query = NULL;
 		protected $db_error = NULL;
 		protected $db_array = NULL;
@@ -24,6 +25,7 @@
 		protected $db_close = NULL;
 		//---------------------------------------------------------
 		public function __construct(){
+			$this->db_conec = $this->db_type.'connect';
 			$this->db_query = $this->db_type.'query';
 			if ($this->db_type == 'mysqli_') {
 				$this->db_error = $this->db_type.'error';
