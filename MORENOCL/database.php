@@ -51,6 +51,7 @@
 					mysqli_select_db($con, $this->db_name);
 				}else{
 					$con = pg_connect("host=".$db_host." port=".$this->db_port." dbname=".$this->db_name." user=".$this->db_user." password=".$this->db_pass);
+					pg_set_client_encoding($con, "UTF8");
 				}
 				//----------------------------------
 				return($con);
@@ -155,6 +156,54 @@
 				//---------------------------------------------------------
 				return $data;
 			}
+			public function db_exec_sql_array($sql,$ret_res=true,$db='con'){
+				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
+				//---------------------------------------------------------
+				$data = new stdClass();$datos = array();
+				$error = NULL;
+				//----------------------------
+				switch ($db) {
+					case 'mkt':
+						//$_cc = $this->conduc_mkt();//conexión a otro server
+					break;
+					default:
+						$_cc = $this->connect(SCHU);
+					break;
+				}
+				//---------------------------------------------------------
+				$res = $fc_query($_cc, $sql) OR $error = $fc_error($_cc);
+				if ($res) {
+					if ($ret_res) {
+						if ((($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res)) > 0) {
+							$data->result = true;
+							$data->cant = (($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res));
+							while ($row = $fc_assoc($res)) {
+								$datos[] = $row;
+							}
+						}else{
+							$data->result = false;
+							$data->cant = 0;
+							$data->res = null;
+						}
+					}else{
+						$data->result = true;
+						$data->mensaje = "Ejecutado exitosamente";
+						$data->cant = (($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res));
+					}
+				}else{
+					$data->result = false;
+					$data->cant = -1;
+					if ($ret_res) {
+						$data->res = $res;
+					}
+				}
+				//---------------------------------------------------------
+				$data->datos = $datos;
+				$data->error = $error;
+				//---------------------------------------------------------
+				$fc_close($_cc);
+				return $data;
+			}
 		//---------------------------------------------------------
 			public function cal_fecha($fecha){
 				$inf = '<span class="btn btn-outline-{COLOR} btn-xs">'.$fecha.'</span>';
@@ -235,6 +284,84 @@
 				}
 				//-----------------------------------
 				return $nueva_fecha;
+			}
+			public function form_float($numero,$cant=2){
+				$numero = trim($numero);
+				//$numero = str_replace('.', '', $numero);
+				$numero = floatval($numero);
+				$numero = str_replace(',', '.', $numero);
+				//-----------------------------------
+				if ($numero > 0) {
+					$num = number_format($numero, $cant, '.', '');
+				}else{
+					$num = '0.00';
+				}
+				//-----------------------------------
+				return $num;
+			}
+			public function getRandomCode($tipo=8,$largo=16){
+				$inf = null;
+				$an1 = '0123456789';
+				$an2 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				$an3 = 'abcdefghijklmnopqrstuvwxyz';
+				$an4 = '$%&{}[]()=!@|#*^+-_<>';
+				$an5 = $an1.$an2;
+				$an6 = $an1.$an3;
+				$an7 = $an1.$an2.$an3;
+				$an8 = $an1.$an2.$an3.$an4;
+				$su1 = strlen($an1) - 1;
+				$su2 = strlen($an2) - 1;
+				$su3 = strlen($an3) - 1;
+				$su4 = strlen($an4) - 1;
+				$su5 = strlen($an5) - 1;
+				$su6 = strlen($an6) - 1;
+				$su7 = strlen($an7) - 1;
+				$su8 = strlen($an8) - 1;
+				//------------------------------------------------
+				switch ($tipo) {
+					case 1:
+						for ($i=0; $i < $largo; $i++) {
+							$inf.=substr($an1,rand(0,$su1),1);
+						}
+					break;
+					case 2:
+						for ($i=0; $i < $largo; $i++) {
+							$inf.=substr($an2,rand(0,$su2),1);
+						}
+					break;
+					case 3:
+						for ($i=0; $i < $largo; $i++) {
+							$inf.=substr($an3,rand(0,$su3),1);
+						}
+					break;
+					case 4:
+						for ($i=0; $i < $largo; $i++) {
+							$inf.=substr($an4,rand(0,$su4),1);
+						}
+					break;
+					case 5:
+						for ($i=0; $i < $largo; $i++) {
+							$inf.=substr($an5,rand(0,$su5),1);
+						}
+					break;
+					case 6:
+						for ($i=0; $i < $largo; $i++) {
+							$inf.=substr($an6,rand(0,$su6),1);
+						}
+					break;
+					case 7:
+						for ($i=0; $i < $largo; $i++) {
+							$inf.=substr($an7,rand(0,$su7),1);
+						}
+					break;
+					case 8:
+						for ($i=0; $i < $largo; $i++) {
+							$inf.=substr($an8,rand(0,$su8),1);
+						}
+					break;
+				}
+				//-----------------------------
+				return $inf;
 			}
 		//---------------------------------------------------------
 			public function db_get_string($dt,$json,$db='con'){
