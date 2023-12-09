@@ -58,7 +58,7 @@
 					break;
 					case 'sqlsrv_':
 						$serverName = $db_host."\sqlexpress"; //serverName\instanceName
-						//$serverName = "serverName\sqlexpress, 1542"; //serverName\instanceName, portNumber (por defecto es 1433)
+						//$serverName = $db_host."\sqlexpress, 1542"; //serverName\instanceName, portNumber (por defecto es 1433)
 						//$connectionInfo = array( "Database"=>"dbName");
 						$connectionInfo = array( "Database" => $this->db_name, "UID" => $this->db_user, "PWD" => $this->db_pass);
 						$con = $fc_conec($serverName, $connectionInfo);
