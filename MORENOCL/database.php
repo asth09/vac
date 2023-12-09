@@ -14,6 +14,7 @@
 		//---------------------------------------
 		protected $db_type = 'mysqli_';
 		//protected $db_type = 'pg_';
+		//protected $db_type = 'sqlsrv_';
 		protected $db_conec = NULL;
 		protected $db_query = NULL;
 		protected $db_error = NULL;
@@ -45,27 +46,31 @@
 		}
 		//---------------------------------------------------------
 			function connect($schu=null){
+				$fc_conec=$this->db_conec;
+				//----------------------------------
 				if (!is_null($schu)) { $name = "db".strtolower($schu); }else{ $name = "db".strtolower(SCHU); }
 				$db_host = $this->$name;
 				//----------------------------------
-				if ($this->db_type == 'mysqli_') {
-					$con = mysqli_connect($db_host, $this->db_user, $this->db_pass);
-					mysqli_select_db($con, $this->db_name);
-				}else{
-					$con = pg_connect("host=".$db_host." port=".$this->db_port." dbname=".$this->db_name." user=".$this->db_user." password=".$this->db_pass);
-					pg_set_client_encoding($con, "UTF8");
+				switch ($this->db_type) {
+					case 'pg_':
+						$con = $fc_conec("host=".$db_host." port=".$this->db_port." dbname=".$this->db_name." user=".$this->db_user." password=".$this->db_pass);
+						pg_set_client_encoding($con, "UTF8");
+					break;
+					case 'sqlsrv_':
+						$serverName = $db_host."\sqlexpress"; //serverName\instanceName
+						//$serverName = "serverName\sqlexpress, 1542"; //serverName\instanceName, portNumber (por defecto es 1433)
+						//$connectionInfo = array( "Database"=>"dbName");
+						$connectionInfo = array( "Database" => $this->db_name, "UID" => $this->db_user, "PWD" => $this->db_pass);
+						$con = $fc_conec($serverName, $connectionInfo);
+						return($con);
+					break;
+					default:
+						$con = $fc_conec($db_host, $this->db_user, $this->db_pass);
+						mysqli_select_db($con, $this->db_name);
+					break;
 				}
 				//----------------------------------
 				return($con);
-			}
-		//---------------------------------------------------------
-			function muestra_sql(){//muestra_sqlsrv
-				$serverName = "serverName\sqlexpress"; //serverName\instanceName
-				//$serverName = "serverName\sqlexpress, 1542"; //serverName\instanceName, portNumber (por defecto es 1433)
-				//$connectionInfo = array( "Database"=>"dbName");
-				$connectionInfo = array( "Database"=>"dbName", "UID"=>"userName", "PWD"=>"password");
-				$con1 = sqlsrv_connect($serverName, $connectionInfo);
-				return($con1);
 			}
 		//---------------------------------------------------------
 			public function db_exec($sql,$ret_res=true,$db='con'){
