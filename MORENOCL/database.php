@@ -56,13 +56,31 @@
 				return($con);
 			}
 		//---------------------------------------------------------
-			public function db_exec($sql,$ret_res=true){
+			function muestra_sql(){//muestra_sqlsrv
+				$serverName = "serverName\sqlexpress"; //serverName\instanceName
+				//$serverName = "serverName\sqlexpress, 1542"; //serverName\instanceName, portNumber (por defecto es 1433)
+				//$connectionInfo = array( "Database"=>"dbName");
+				$connectionInfo = array( "Database"=>"dbName", "UID"=>"userName", "PWD"=>"password");
+				$con1 = sqlsrv_connect($serverName, $connectionInfo);
+				return($con1);
+			}
+		//---------------------------------------------------------
+			public function db_exec($sql,$ret_res=true,$db='con'){
 				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
 				//---------------------------------------------------------
 				$data = new stdClass();
 				$error = NULL;
+				//----------------------------
+				switch ($db) {
+					case 'mkt':
+						//$_cc = $this->conduc_mkt();//conexión a otro server
+					break;
+					default:
+						$_cc = $this->connect(SCHU);
+					break;
+				}
 				//---------------------------------------------------------
-				$res = $fc_query($this->connect(), $sql) OR $error = $fc_error($this->connect());
+				$res = $fc_query($_cc, $sql) OR $error = $fc_error($_cc);
 				if ($res) {
 					if ($ret_res) {
 						if ((($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res)) > 0) {
@@ -90,13 +108,22 @@
 				//---------------------------------------------------------
 				return $data;
 			}
-			public function db_exec_sql($sql,$ret_res=true){
+			public function db_exec_sql($sql,$ret_res=true,$db='con'){
 				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
 				//---------------------------------------------------------
 				$data = new stdClass();
 				$error = NULL;
+				//----------------------------
+				switch ($db) {
+					case 'mkt':
+						//$_cc = $this->conduc_mkt();//conexión a otro server
+					break;
+					default:
+						$_cc = $this->connect(SCHU);
+					break;
+				}
 				//---------------------------------------------------------
-				$res = $fc_query($this->connect(), $sql) OR $error = $fc_error($this->connect());
+				$res = $fc_query($_cc, $sql) OR $error = $fc_error($_cc);
 				if ($res) {
 					if ($ret_res) {
 						if ((($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res)) > 0) {
@@ -129,16 +156,7 @@
 				return $data;
 			}
 		//---------------------------------------------------------
-			function muestra_sql(){//muestra_sqlsrv
-				$serverName = "serverName\sqlexpress"; //serverName\instanceName
-				//$serverName = "serverName\sqlexpress, 1542"; //serverName\instanceName, portNumber (por defecto es 1433)
-				//$connectionInfo = array( "Database"=>"dbName");
-				$connectionInfo = array( "Database"=>"dbName", "UID"=>"userName", "PWD"=>"password");
-				$con1 = sqlsrv_connect($serverName, $connectionInfo);
-				return($con1);
-			}
-		//---------------------------------------------------------
-			function cal_fecha($fecha){
+			public function cal_fecha($fecha){
 				$inf = '<span class="btn btn-outline-{COLOR} btn-xs">'.$fecha.'</span>';
 				//-----------------------------
 				if (!is_null($fecha)) {
@@ -167,7 +185,7 @@
 				//-----------------------------
 				return $inf;
 			}
-			function sum_fecha($campo,$fecha,$time){
+			public function sum_fecha($campo,$fecha,$time){
 				if ($campo == 1 && !is_null($fecha)) {
 					// Verificar si la fecha tiene el formato DD/MM/YYYY
 					$fecha_formato_dmy = DateTime::createFromFormat('d/m/Y', $fecha);
@@ -204,7 +222,7 @@
 				//-----------------------------------
 				return $nueva_fecha;
 			}
-			function form_fecha($fecha){
+			public function form_fecha($fecha){
 				// Verificar si la fecha tiene el formato DD/MM/YYYY
 				$fecha_formato_dmy = DateTime::createFromFormat('d/m/Y', $fecha);
 				//-----------------------------------
@@ -219,11 +237,20 @@
 				return $nueva_fecha;
 			}
 		//---------------------------------------------------------
-			function db_get_string($dt,$json){
+			public function db_get_string($dt,$json,$db='con'){
 				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
 				//---------------------------------------------------------
 				$data = new stdClass(); $sql = null;
 				$data->error = null;
+				//----------------------------
+				switch ($db) {
+					case 'mkt':
+						//$_cc = $this->conduc_mkt();//conexión a otro server
+					break;
+					default:
+						$_cc = $this->connect(SCHU);
+					break;
+				}
 				//----------------------------
 				$er=1;
 				if(is_null($json->tname)){ $er=0; }
@@ -233,7 +260,7 @@
 				//----------------------------
 				if ($er == 1) {
 					$sql = $this->get_sql($json->tname, $dt, 8, $json->tid, $json->pid);//8 select por VSLOR STRING
-					$res = $fc_query($this->connect(),$sql) OR $data->error = ($fc_error($this->connect()));
+					$res = $fc_query($_cc,$sql) OR $data->error = ($fc_error($_cc));
 					if ($res) {
 						if ((($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res)) > 0) {
 							$data->result = true;
@@ -264,14 +291,25 @@
 				//$data->sql = $sql;
 				//$data->input = $json;
 				//------------------
-				$fc_close($this->connect());
+				$fc_close($_cc);
 				return $data;
 			}
-			function db_get_id($dt,$json){
+			public function db_get_id($dt,$json,$db='con'){
 				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
 				//---------------------------------------------------------
 				$data = new stdClass(); $sql = null;
 				$data->error = null;
+				//----------------------------
+				switch ($db) {
+					case 'mkt':
+						//$_cc = $this->conduc_mkt();//conexión a otro server
+						$tipo_get = 12;//8 select por ID - sin usuarios
+					break;
+					default:
+						$_cc = $this->connect(SCHU);
+						$tipo_get = 8;//8 select por ID
+					break;
+				}
 				//----------------------------
 				$er=1;
 				if(is_null($json->tname)){ $er=0; }
@@ -280,8 +318,8 @@
 				if($json->pid <= 0){ $er=0; }
 				//----------------------------
 				if ($er == 1) {
-					$sql = $this->get_sql($json->tname, $dt, 8, $json->tid, $json->pid);//8 select por ID
-					$res = $fc_query($this->connect(),$sql) OR $data->error = ($fc_error($this->connect()));
+					$sql = $this->get_sql($json->tname, $dt, $tipo_get, $json->tid, $json->pid);
+					$res = $fc_query($_cc,$sql) OR $data->error = ($fc_error($_cc));
 					if ($res) {
 						if ((($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res)) > 0) {
 							$data->result = true;
@@ -312,14 +350,23 @@
 				//$data->sql = $sql;
 				//$data->input = $json;
 				//------------------
-				$fc_close($this->connect());
+				$fc_close($_cc);
 				return $data;
 			}
-			function db_get_camp_id_array($dt,$json){
+			public function db_get_camp_id_array($dt,$json,$db='con'){
 				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
 				//---------------------------------------------------------
 				$data = new stdClass(); $sql = null; $datos = array();
 				$data->error = null;
+				//----------------------------
+				switch ($db) {
+					case 'mkt':
+						//$_cc = $this->conduc_mkt();//conexión a otro server
+					break;
+					default:
+						$_cc = $this->connect(SCHU);
+					break;
+				}
 				//----------------------------
 				$er=1;
 				if(is_null($json->tname)){ $er=0; }
@@ -329,7 +376,7 @@
 				//----------------------------
 				if ($er == 1) {
 					$sql = $this->get_sql($json->tname, $dt, 11, $json->tid, $json->pid, null, $json->adic);//8 select por ID
-					$res = $fc_query($this->connect(),$sql) OR $data->error = ($fc_error($this->connect()));
+					$res = $fc_query($_cc,$sql) OR $data->error = ($fc_error($_cc));
 					if ($res) {
 						if ((($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res)) > 0) {
 							$data->result = true;
@@ -359,14 +406,23 @@
 				//$data->sql = $sql;
 				//$data->input = $json;
 				//------------------
-				$fc_close($this->connect());
+				$fc_close($_cc);
 				return $data;
 			}
-			function db_get_all($dt,$json){
+			public function db_get_all($dt,$json,$db='con'){
 				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
 				//---------------------------------------------------------
 				$data = new stdClass(); $sql = null; $fila = array(); $inf = array();
 				$data->error = null;$n=0;
+				//----------------------------
+				switch ($db) {
+					case 'mkt':
+						//$_cc = $this->conduc_mkt();//conexión a otro server
+					break;
+					default:
+						$_cc = $this->connect(SCHU);
+					break;
+				}
 				//----------------------------
 				$er=1;
 				if(is_null($json->tname)){ $er=0; }
@@ -375,7 +431,7 @@
 				//----------------------------
 				if ($er == 1) {
 					$sql = $this->get_sql($json->tname, $dt, $json->type, $json->tid, $json->pid);//5 select por ID
-					$res = $fc_query($this->connect(),$sql) OR $data->error = ($fc_error($this->connect()));
+					$res = $fc_query($_cc,$sql) OR $data->error = ($fc_error($_cc));
 					if ($res) {
 						if ((($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res)) > 0) {
 							$data->result = true;
@@ -416,16 +472,25 @@
 				//$data->input = $json;
 				//error_log("Result: ".$n);
 				//------------------
-				$fc_close($this->connect());
+				$fc_close($_cc);
 				//------------------
 				return $data;
 			}
 		//---------------------------------------------------------
-			function db_add($dt,$json){
+			public function db_add($dt,$json,$db='con'){
 				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
 				//---------------------------------------------------------
 				$data = new stdClass(); $sql = null;
 				$data->error = null;
+				//----------------------------
+				switch ($db) {
+					case 'mkt':
+						//$_cc = $this->conduc_mkt();//conexión a otro server
+					break;
+					default:
+						$_cc = $this->connect(SCHU);
+					break;
+				}
 				//----------------------------
 				$er=1;
 				if(is_null($json->tname)){ $er=0; }
@@ -433,7 +498,7 @@
 				if ($er == 1) {
 					$sql = $this->get_sql($json->tname, $dt, 1);
 					try {
-						$res = $fc_query($this->connect(),$sql) OR $data->error .= ($fc_error($this->connect()));
+						$res = $fc_query($_cc,$sql) OR $data->error .= ($fc_error($_cc));
 						if ($res) {
 							$data->result = true;
 							$data->inf = $json->success;
@@ -456,14 +521,23 @@
 				//------------------
 				$data->sql = $sql;
 				//------------------
-				$fc_close($this->connect());
+				$fc_close($_cc);
 				return $data;
 			}
-			function db_add_all($dt,$json){
+			public function db_add_all($dt,$json,$db='con'){
 				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
 				//---------------------------------------------------------
 				$data = new stdClass(); $sql = null; $result = array(); $fila_res = array();
 				$data->error = null;
+				//----------------------------
+				switch ($db) {
+					case 'mkt':
+						//$_cc = $this->conduc_mkt();//conexión a otro server
+					break;
+					default:
+						$_cc = $this->connect(SCHU);
+					break;
+				}
 				//----------------------------
 				$er=1;$n=0;
 				if(is_null($json->tname)){ $er=0; }
@@ -475,7 +549,7 @@
 						if (!is_null($fila[$json->t_camp])) {
 							$sql = $this->get_sql($json->tname, $fila, 1);
 							try {
-								$res = $fc_query($this->connect(),$sql) OR $data->error .= ($fc_error($this->connect()));
+								$res = $fc_query($_cc,$sql) OR $data->error .= ($fc_error($_cc));
 								if ($res) {
 									$fila_res = array(
 										"result"	=>	true,
@@ -528,15 +602,24 @@
 				$data->res = (($n > 1000) ? $result[0] : $result);
 				$data->rows = $n;
 				//------------------
-				$fc_close($this->connect());
+				$fc_close($_cc);
 				return $data;
 			}
-			function db_add_ret($dt,$json){
+			public function db_add_ret($dt,$json,$db='con'){
 				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
 				//---------------------------------------------------------
 				$data = new stdClass(); $sql = null;
 				$data->error = null;
 				$data->pid = 0;
+				//----------------------------
+				switch ($db) {
+					case 'mkt':
+						//$_cc = $this->conduc_mkt();//conexión a otro server
+					break;
+					default:
+						$_cc = $this->connect(SCHU);
+					break;
+				}
 				//----------------------------
 				$er=1;
 				if(is_null($json->tname)){ $er=0; }
@@ -544,7 +627,7 @@
 				if ($er == 1) {
 					$sql = $this->get_sql($json->tname, $dt, 1, $json->tid, $json->pid, true);
 					try {
-						$res = $fc_query($this->connect(),$sql) OR $data->error .= ($fc_error($this->connect()));
+						$res = $fc_query($_cc,$sql) OR $data->error .= ($fc_error($_cc));
 						if ($res) {
 							if ((($this->db_type == 'mysqli_') ? $res->$fc_num_r : $fc_num_r($res)) > 0) {
 								$data->result = true;
@@ -578,14 +661,23 @@
 				//------------------
 				//$data->sql = $sql;
 				//------------------
-				$fc_close($this->connect());
+				$fc_close($_cc);
 				return $data;
 			}
-			function db_edit($dt,$json){
+			public function db_edit($dt,$json,$db='con'){
 				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
 				//---------------------------------------------------------
 				$data = new stdClass(); $sql = null;
 				$data->error = null;
+				//----------------------------
+				switch ($db) {
+					case 'mkt':
+						//$_cc = $this->conduc_mkt();//conexión a otro server
+					break;
+					default:
+						$_cc = $this->connect(SCHU);
+					break;
+				}
 				//----------------------------
 				switch ($json->success) {
 					case "edit":
@@ -624,7 +716,7 @@
 				if ($er == 1) {
 					$sql = $this->get_sql($json->tname, $dt, 2, $json->tid, $json->pid);
 					try {
-						$res = $fc_query($this->connect(),$sql) OR $data->error .= ($fc_error($this->connect()));
+						$res = $fc_query($_cc,$sql) OR $data->error .= ($fc_error($_cc));
 						if ($res) {
 							$data->result = true;
 							$data->inf = $json->success;
@@ -647,14 +739,23 @@
 				//------------------
 				$data->sql = $sql;
 				//------------------
-				$fc_close($this->connect());
+				$fc_close($_cc);
 				return $data;
 			}
-			function db_edit_string($dt,$json){
+			public function db_edit_string($dt,$json,$db='con'){
 				$fc_query=$this->db_query;$fc_error=$this->db_error;$fc_array=$this->db_array;$fc_object=$this->db_object;$fc_assoc=$this->db_assoc;$fc_num_r=$this->db_num_r;$fc_fre_r=$this->db_fre_r;$fc_close=$this->db_close;
 				//---------------------------------------------------------
 				$data = new stdClass(); $sql = null;
 				$data->error = null;
+				//----------------------------
+				switch ($db) {
+					case 'mkt':
+						//$_cc = $this->conduc_mkt();//conexión a otro server
+					break;
+					default:
+						$_cc = $this->connect(SCHU);
+					break;
+				}
 				//----------------------------
 				switch ($json->success) {
 					case "edit":
@@ -693,7 +794,7 @@
 				if ($er == 1) {
 					$sql = $this->get_sql($json->tname, $dt, 7, $json->tid, $json->pid);
 					try {
-						$res = $fc_query($this->connect(),$sql) OR $data->error .= ($fc_error($this->connect()));
+						$res = $fc_query($_cc,$sql) OR $data->error .= ($fc_error($_cc));
 						if ($res) {
 							$data->result = true;
 							$data->inf = $json->success;
@@ -716,22 +817,22 @@
 				//------------------
 				//$data->sql = $sql;
 				//------------------
-				$fc_close($this->connect());
+				$fc_close($_cc);
 				return $data;
 			}
 		//---------------------------------------------------------
-			function get_datos($pid,$type){
+			public function get_datos($pid,$type){
 				$data = new stdClass();
 				//---------------------------------------------------------
 				switch ($type) {
 					case 'user':
-						$sql = "SELECT * FROM usuarios WHERE id_usuario=".$pid." LIMIT 1 ;";
+						$sql = "SELECT * FROM scheme_name.view_users_all WHERE id_usuario=".$pid." LIMIT 1 ;";
 					break;
 					case 'placa':
-						$sql = "SELECT * FROM unidades WHERE placa LIKE '".$pid."' LIMIT 1 ;";
+						$sql = "SELECT * FROM scheme_name.unidades WHERE placa LIKE '".$pid."' LIMIT 1 ;";
 					break;
 					case 'clie':
-						$sql = "SELECT * FROM clientes WHERE id_int LIKE '".$pid."' LIMIT 1 ;";
+						$sql = "SELECT * FROM scheme_name.v_clients WHERE id_int LIKE '".$pid."' LIMIT 1 ;";
 					break;
 					default:
 						$sql = null;
@@ -745,7 +846,7 @@
 				return $data;
 			}
 		//---------------------------------------------------------
-			function get_sql(
+			public function get_sql(
 				$this_table, //nombre de tabla
 				$dt, //array con los datos. El nombre de las Key debe ser igual al nombre de los campos en la tabla
 				$tipo=1, //Tipo de sentencia: 1 para INSERT / 2 para UPDATE / 3 para CALL
@@ -832,17 +933,17 @@
 						$sql .= $this_tid." LIKE '".$json_pid."' ;";
 					break;
 					case 8://GENERRAR SENTENCIA PARA SELECT EN TABLA POR ID/CAMPO - VALOR (INT)
-						$sql = "SELECT t1.* FROM ".$this_table." t1 ";
+						$sql = "SELECT * FROM ".$this_table."  ";
 						//$sql = "SELECT t1.*, c.nombre_u AS user_add, c.correo_u AS mail_add, e.nombre_u AS user_edit, e.correo_u AS mail_edit FROM ".$this_table." t1 ";
-							//$sql .= " LEFT JOIN usuarios c ON t1.id_created=c.id_usuario ";
-							//$sql .= " LEFT JOIN usuarios e ON t1.id_updated=e.id_usuario ";
+							//$sql .= " LEFT OUTER JOIN scheme_name.view_users_all c ON t1.id_created=c.id_usuario ";
+							//$sql .= " LEFT OUTER JOIN scheme_name.view_users_all e ON t1.id_updated=e.id_usuario ";
 						$sql .= " WHERE ";
 						//------------campos-adicionale------------
 							if (!is_null($adic)) {
-								$sql .= "t1.".$adic." AND ";
+								$sql .= "".$adic." AND ";
 							}
 						//-----------fin-campos-adicionale---------
-						$sql .= "t1.".$this_tid."=".$json_pid.";";
+						$sql .= "".$this_tid."=".$json_pid.";";
 					break;
 					case 9://GENERRAR SENTENCIA PARA SELECT EN TABLA POR ID/CAMPO - VALOR (STRING)
 						$sql = "SELECT * FROM ".$this_table." WHERE ";
@@ -883,6 +984,15 @@
 							}
 						//-----------fin-campos-adicionale---------
 						$sql .= $this_tid."=".$json_pid.";";
+					break;
+					case 12://GENERRAR SENTENCIA PARA SELECT EN TABLA POR ID/CAMPO - VALOR (INT) - SIN USUARIOS
+						$sql = "SELECT * FROM ".$this_table." WHERE ";
+						//------------campos-adicionale------------
+							if (!is_null($adic)) {
+								$sql .= "".$adic." AND ";
+							}
+						//-----------fin-campos-adicionale---------
+						$sql .= "".$this_tid."=".$json_pid.";";
 					break;
 					default://GENERAR SENTENCIA UPDATE
 						$sql = "UPDATE ".$this_table." SET ";
