@@ -162,7 +162,7 @@
 						$inf = str_replace('{COLOR}', 'info '.$diferencia_dias, $inf);
 					}
 				}else{
-					$inf = str_replace('{COLOR}', 'info '.$diferencia_dias, $inf);
+					$inf = str_replace('{COLOR}', 'info 0', $inf);
 				}
 				//-----------------------------
 				return $inf;
