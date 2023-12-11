@@ -3,7 +3,7 @@
 	$rut='../';
 	$pagina='Contacto';
 	$direc='contacto.php';
-	require($rut.'constant.php');
+	require($rut.'config/constant.php');
 	$inf=null;
 	//-------------------------------------------
 	require_once '../plugins/dompdf/autoload.inc.php';

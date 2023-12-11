@@ -40,7 +40,7 @@
 		//----------------------------------------
 		return $data;
 	}
-	function exportar($rut){
+	function exportar($rut,$tip){
 		global $cls;
 		require_once($rut.DIRMOR.$cls['dbs'].'.php');
 		require_once($rut.DIRMOR.$cls['cl1'].'.php');
@@ -48,7 +48,7 @@
 		$_cl1 = new $cls['cl1']();
 		$data = new stdClass();
 		//-------------------------------
-		$data->inf = $_cl1->exportar();
+		$data->inf = $_cl1->exportar($tip);
 		//-------------------------------
 		return $data;
 	}

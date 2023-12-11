@@ -3,7 +3,7 @@
 	$rut='../';
 	$pagina='Cursos';
 	$direc='cursos.php';
-	require($rut.'constant.php');
+	require($rut.'config/constant.php');
 	$inf=null;
 	//-------------------------------------------
 	if (isset($_SESSION['sid'])) {
