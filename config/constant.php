@@ -33,8 +33,8 @@ define('ACTI', URL.DIRACT);
 define('PLUG', URL.'plugins/');
 define('FMMA', 'https://www.frankmorenoalburqueque.com/');
 define('LOGOF', FMMA.'images/logo.png');
-define('FACE', 'https://www.facebook.com/FrankMartinMA/');
-define('TWIT', 'https://www.facebook.com/FrankMartinMA/');
-define('INST', 'https://www.facebook.com/frankmartinmoreno/');
+define('FACE', 'https://www.facebook.com/fmorenoadmin/');
+define('TWIT', 'https://www.facebook.com/fmorenoadmin/');
+define('INST', 'https://www.facebook.com/fmorenoadmin/');
 //-------------------------------------------
 define('SECRET_KEY', '');
