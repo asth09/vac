@@ -45,7 +45,7 @@
 			$this->db_close = $this->db_type.'close';
 		}
 		//---------------------------------------------------------
-			function connect($schu=null){
+			function connect($schu=null,$db='con'){
 				$fc_conec=$this->db_conec;
 				//----------------------------------
 				if (!is_null($schu)) { $name = "db".strtolower($schu); }else{ $name = "db".strtolower(SCHU); }

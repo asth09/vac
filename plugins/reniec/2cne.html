@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Consulta CNE - Venezuela</title>
+
+<!--<script src="js/jquery.min.js"></script>-->
+<script src="js/jquery-3.4.1.min.js"></script>
+</head>
+
+<body>
+
+<form method="post">
+	<input type="text" class="ced" id="ced" name="ced" minlength="8" maxlength="8" placeholder="Ingrese su N° ced" required>
+    <button id="botoncito" class="botoncito">Enviar</button>
+    
+</form>
+
+<div id="mostrar_ced">Aqui se mostrara el ced Consultado</div>
+<div>En una Sola Linea: <span id="complet"></span></div>
+<div>Imprimir array: <span id="arrr"></span></div>
+<br>
+<br>
+Enlaces de Inrerés:
+<ol>
+	<li><a href="http://app.sis.gob.pe/SisConsultaEnLinea/Consulta/frmConsultaEnLinea.aspx" target="_blank">Enlace 1</a></li>
+	<li><a href="http://ww4.essalud.gob.pe:7777/acredita/" target="_blank">Enlace 2</a></li>
+	<li><a href="http://www.sunat.gob.pe/cl-ti-itmrconsruc/FrameCriterioBusquedaMovil.jsp" target="_blank">Enlace 3</a></li>
+</ol>
+
+<script>
+	$(function(){
+		$('#botoncito').on('click', function(){
+			var ced = $('#ced').val();
+			var url = 'callcne.php';
+			$.ajax({
+			type:'POST',
+			url:url,
+			data:'ced='+ced,
+			success: function(datos_ced){
+				var datos = eval(datos_ced);
+				var nombre = datos[1].substr(77);
+				var nume1 = (nombre.length - 29);
+				nombre = nombre.substr(0,nume1);
+					$('#mostrar_ced').text(datos[0]);
+					$('#complet').text(nombre);
+					//document.getElementById('arrr').innerHTML = datos_ced;
+			}
+		});
+		return false;
+		});
+	});
+</script>
+
+</body>
+</html>
+</b></td> </tr> </table> 

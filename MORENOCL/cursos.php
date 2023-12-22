@@ -118,7 +118,7 @@
 					if ($res->cant == 0) {
 						$inf.='';
 					}else{
-						$inf.='<tr><td colspan="'.$cant.'"><div class="alert alert-danger">Error: '.$res->error.'</div></td></tr>';
+						$inf.='<div class="alert alert-danger">Error: '.$res->error.'</div>';
 					}
 				}
 			$inf.='</div>';

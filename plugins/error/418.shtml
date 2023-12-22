@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Error 418 | Frank Martin Moreno Alburqueque | WebMaster - Programador Web</title>
+	<!-- Google font -->
+	<link href="https://fonts.googleapis.com/css?family=Cabin:400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:900" rel="stylesheet">
+	<script type="text/javascript" src="https://kit.fontawesome.com/3492479f55.js"></script>
+	<script type="text/javascript" src="https://plugins.sistemasongoku.com/ckeditor/ckeditor.js"></script>
+	<!-- Custom stlylesheet -->
+	<link type="text/css" rel="stylesheet" href="https://plugins.sistemasongoku.com/css/style.css" />
+	<link rel="shortcut icon" type="image/x-icon" href="https://archivos.sistemasongoku.com/favicon.ico">
+	<script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-103640094-4"></script>
+	<script src="https://archivos.sistemasongoku.com/tag.js"></script>
+</head>
+<body>
+	<div id="notfound">
+		<div class="notfound">
+			<div class="notfound-404">
+				<h3>El Captcha</h3>
+				<h1><span>4</span><span>1</span><span>8</span></h1>
+			</div>
+			<h2>es Requerido<hr><br></h2>
+			<p>
+				<a href="mailto:admin@frankmorenoalburqueque.com" target="_blank" class="btn btn-success">
+					<i class="fa fa-envelope-o"></i> Contactar al Administrador <i class="fa fa-envelope-o"></i>
+				</a>
+			</p>
+		</div>
+	</div>
+	<!-- jquery
+		============================================ -->
+	<script src="https://plugins.sistemasongoku.com/jquery/jquery.min.js"></script>
+	<!-- bootstrap JS
+		============================================ -->
+	<script src="https://plugins.sistemasongoku.com/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<!-- wow JS-->
+</body>
+</html>

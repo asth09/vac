@@ -61,7 +61,7 @@
 			  	<input type="hidden" name="nav_cli" value="<?= base64_encode($nav_cli); ?>" />
 			  	<input type="hidden" name="sist_cli" value="<?= base64_encode($sist_cli); ?>" />
 				<button type="submit" id="enviar" name="guardar" class="site-btn btn-block">Enviar Mensaje</button>
-				<button type="button" id="enviando" class="btn btn-danger btn-btn-block" style="display: none;">Enviando Mensaje....</button>
+				<button type="button" id="enviando" class="btn btn-danger btn-btn-block" style="display: none; width: 100%;">Enviando Mensaje....</button>
 			</form>
 		</div>
 	</section>
