@@ -133,9 +133,9 @@
 				//----------------------------------------
 				if (SCHU == '_qas') {
 					//----------------------------------------
-					$r_cor = mail($para, $asunto, $html, $headers);
+					//$r_cor = mail($para, $asunto, $html, $headers);
 					//----------------------------------------
-					echo $_SESSION['mensjEmail'] = $r_cor;
+					//echo $_SESSION['mensjEmail'] = $r_cor;
 				}else{
 					//----------------------------------------
 					require_once($ru0.DIRMOR.$cls['cl0'].'.php');
