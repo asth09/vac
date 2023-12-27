@@ -67,11 +67,11 @@
 				}
 				//----------------------------------
 				switch ($this->db_type) {
-					case 'pg_':
+					case 'pg_'://conexión a PostgreSQL
 						$con = $fc_conec("host=".$db_host." port=".$_port." dbname=".$_name." user=".$_user." password=".$_pass);
 						pg_set_client_encoding($con, "UTF8");
 					break;
-					case 'sqlsrv_':
+					case 'sqlsrv_'://Conexción a SQL Server
 						$serverName = $db_host."\sqlexpress"; //serverName\instanceName
 						//$serverName = $db_host."\sqlexpress, 1542"; //serverName\instanceName, portNumber (por defecto es 1433)
 						//$connectionInfo = array( "Database"=>"dbName");
@@ -79,7 +79,7 @@
 						$con = $fc_conec($serverName, $connectionInfo);
 						return($con);
 					break;
-					default:
+					default://Conexción a MySQL
 						$con = $fc_conec($db_host, $_user, $_pass);
 						mysqli_select_db($con, $_name);
 						$con->set_charset("utf8");
@@ -917,6 +917,19 @@
 				}
 				//---------------------------------------------------------
 				return $data;
+			}
+			public function custom_escape_string($value) {
+				// Si estás utilizando una conexión a la base de datos,
+				// utiliza la función de escape proporcionada por tu API de base de datos
+				// o considera usar sentencias preparadas.
+				// Aquí hay un ejemplo básico de cómo podrías escapar caracteres especiales.
+				// Esta función no garantiza la seguridad contra todas las formas de ataque.
+				$search = array("\\", "\x00", "\n", "\r", "'", '"', "\x1a");
+				$replace = array("\\\\", "\\0", "\\n", "\\r", "\\'", '\\"', "\\Z");
+				//---------------------------------------------------------
+				$_temp = str_replace($search, $replace, $value);
+				//---------------------------------------------------------
+				return $_temp;
 			}
 		//---------------------------------------------------------
 			public function get_sql(
