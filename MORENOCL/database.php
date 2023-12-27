@@ -7,7 +7,7 @@
 		//-----------------------------
 		private $db_prd = 'localhost';//IP SERVER prd
 		private $db_qas = 'localhost';//IP SERVER qas
-		private $db_port = '5489';
+		private $db_port = '';
 		private $db_name = 'vac';
 		private $db_user = 'root';
 		private $db_pass = '';
@@ -51,22 +51,38 @@
 				if (!is_null($schu)) { $name = "db".strtolower($schu); }else{ $name = "db".strtolower(SCHU); }
 				$db_host = $this->$name;
 				//----------------------------------
+				switch ($db) {
+					case 'vac2':
+						$_port = '';
+						$_user = 'root';
+						$_pass = '';
+						$_name = 'vac2';
+					break;
+					default:
+						$_port = $this->db_port;
+						$_user = $this->db_user;
+						$_pass = $this->db_pass;
+						$_name = $this->db_name;
+					break;
+				}
+				//----------------------------------
 				switch ($this->db_type) {
 					case 'pg_':
-						$con = $fc_conec("host=".$db_host." port=".$this->db_port." dbname=".$this->db_name." user=".$this->db_user." password=".$this->db_pass);
+						$con = $fc_conec("host=".$db_host." port=".$_port." dbname=".$_name." user=".$_user." password=".$_pass);
 						pg_set_client_encoding($con, "UTF8");
 					break;
 					case 'sqlsrv_':
 						$serverName = $db_host."\sqlexpress"; //serverName\instanceName
 						//$serverName = $db_host."\sqlexpress, 1542"; //serverName\instanceName, portNumber (por defecto es 1433)
 						//$connectionInfo = array( "Database"=>"dbName");
-						$connectionInfo = array( "Database" => $this->db_name, "UID" => $this->db_user, "PWD" => $this->db_pass);
+						$connectionInfo = array( "Database" => $_name, "UID" => $_user, "PWD" => $_pass);
 						$con = $fc_conec($serverName, $connectionInfo);
 						return($con);
 					break;
 					default:
-						$con = $fc_conec($db_host, $this->db_user, $this->db_pass);
-						mysqli_select_db($con, $this->db_name);
+						$con = $fc_conec($db_host, $_user, $_pass);
+						mysqli_select_db($con, $_name);
+						$con->set_charset("utf8");
 					break;
 				}
 				//----------------------------------
@@ -79,14 +95,7 @@
 				$data = new stdClass();
 				$error = NULL;
 				//----------------------------
-				switch ($db) {
-					case 'mkt':
-						//$_cc = $this->conduc_mkt();//conexión a otro server
-					break;
-					default:
-						$_cc = $this->connect(SCHU);
-					break;
-				}
+				$_cc = $this->connect(SCHU,$db);
 				//---------------------------------------------------------
 				$res = $fc_query($_cc, $sql) OR $error = $fc_error($_cc);
 				if ($res) {
@@ -122,14 +131,7 @@
 				$data = new stdClass();
 				$error = NULL;
 				//----------------------------
-				switch ($db) {
-					case 'mkt':
-						//$_cc = $this->conduc_mkt();//conexión a otro server
-					break;
-					default:
-						$_cc = $this->connect(SCHU);
-					break;
-				}
+				$_cc = $this->connect(SCHU,$db);
 				//---------------------------------------------------------
 				$res = $fc_query($_cc, $sql) OR $error = $fc_error($_cc);
 				if ($res) {
@@ -169,14 +171,7 @@
 				$data = new stdClass();$datos = array();
 				$error = NULL;
 				//----------------------------
-				switch ($db) {
-					case 'mkt':
-						//$_cc = $this->conduc_mkt();//conexión a otro server
-					break;
-					default:
-						$_cc = $this->connect(SCHU);
-					break;
-				}
+				$_cc = $this->connect(SCHU,$db);
 				//---------------------------------------------------------
 				$res = $fc_query($_cc, $sql) OR $error = $fc_error($_cc);
 				if ($res) {
@@ -377,14 +372,7 @@
 				$data = new stdClass(); $sql = null;
 				$data->error = null;
 				//----------------------------
-				switch ($db) {
-					case 'mkt':
-						//$_cc = $this->conduc_mkt();//conexión a otro server
-					break;
-					default:
-						$_cc = $this->connect(SCHU);
-					break;
-				}
+				$_cc = $this->connect(SCHU,$db);
 				//----------------------------
 				$er=1;
 				if(is_null($json->tname)){ $er=0; }
@@ -493,14 +481,7 @@
 				$data = new stdClass(); $sql = null; $datos = array();
 				$data->error = null;
 				//----------------------------
-				switch ($db) {
-					case 'mkt':
-						//$_cc = $this->conduc_mkt();//conexión a otro server
-					break;
-					default:
-						$_cc = $this->connect(SCHU);
-					break;
-				}
+				$_cc = $this->connect(SCHU,$db);
 				//----------------------------
 				$er=1;
 				if(is_null($json->tname)){ $er=0; }
@@ -549,14 +530,7 @@
 				$data = new stdClass(); $sql = null; $fila = array(); $inf = array();
 				$data->error = null;$n=0;
 				//----------------------------
-				switch ($db) {
-					case 'mkt':
-						//$_cc = $this->conduc_mkt();//conexión a otro server
-					break;
-					default:
-						$_cc = $this->connect(SCHU);
-					break;
-				}
+				$_cc = $this->connect(SCHU,$db);
 				//----------------------------
 				$er=1;
 				if(is_null($json->tname)){ $er=0; }
@@ -617,14 +591,7 @@
 				$data = new stdClass(); $sql = null;
 				$data->error = null;
 				//----------------------------
-				switch ($db) {
-					case 'mkt':
-						//$_cc = $this->conduc_mkt();//conexión a otro server
-					break;
-					default:
-						$_cc = $this->connect(SCHU);
-					break;
-				}
+				$_cc = $this->connect(SCHU,$db);
 				//----------------------------
 				$er=1;
 				if(is_null($json->tname)){ $er=0; }
@@ -664,14 +631,7 @@
 				$data = new stdClass(); $sql = null; $result = array(); $fila_res = array();
 				$data->error = null;
 				//----------------------------
-				switch ($db) {
-					case 'mkt':
-						//$_cc = $this->conduc_mkt();//conexión a otro server
-					break;
-					default:
-						$_cc = $this->connect(SCHU);
-					break;
-				}
+				$_cc = $this->connect(SCHU,$db);
 				//----------------------------
 				$er=1;$n=0;
 				if(is_null($json->tname)){ $er=0; }
@@ -746,14 +706,7 @@
 				$data->error = null;
 				$data->pid = 0;
 				//----------------------------
-				switch ($db) {
-					case 'mkt':
-						//$_cc = $this->conduc_mkt();//conexión a otro server
-					break;
-					default:
-						$_cc = $this->connect(SCHU);
-					break;
-				}
+				$_cc = $this->connect(SCHU,$db);
 				//----------------------------
 				$er=1;
 				if(is_null($json->tname)){ $er=0; }
@@ -804,14 +757,7 @@
 				$data = new stdClass(); $sql = null;
 				$data->error = null;
 				//----------------------------
-				switch ($db) {
-					case 'mkt':
-						//$_cc = $this->conduc_mkt();//conexión a otro server
-					break;
-					default:
-						$_cc = $this->connect(SCHU);
-					break;
-				}
+				$_cc = $this->connect(SCHU,$db);
 				//----------------------------
 				switch ($json->success) {
 					case "edit":
@@ -882,14 +828,7 @@
 				$data = new stdClass(); $sql = null;
 				$data->error = null;
 				//----------------------------
-				switch ($db) {
-					case 'mkt':
-						//$_cc = $this->conduc_mkt();//conexión a otro server
-					break;
-					default:
-						$_cc = $this->connect(SCHU);
-					break;
-				}
+				$_cc = $this->connect(SCHU,$db);
 				//----------------------------
 				switch ($json->success) {
 					case "edit":
